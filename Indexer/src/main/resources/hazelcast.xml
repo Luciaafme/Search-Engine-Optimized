@@ -12,4 +12,5 @@
         </tcp-ip>
     </join>
 </network>
+
 </hazelcast>

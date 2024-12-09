@@ -10,7 +10,7 @@ public class Main {
 	public static void main(String[] args) {
 		String datalakePath = "";
 
-		int numBooks = 2;
+		int numBooks = 1;
 		Filter filter = new LanguageFilter();
 		Downloader downloader = new BookDownloader(filter);
 		WebCrawlerController controller = new WebCrawlerController(downloader, datalakePath, numBooks);
