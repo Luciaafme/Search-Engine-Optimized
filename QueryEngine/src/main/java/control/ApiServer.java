@@ -10,12 +10,12 @@ public class ApiServer {
 
 	private static final Gson gson = new Gson();
 
-	public static void configureRoutes(BookController bookController) {
+	public static void configureRoutes(QueryEngine queryEngine) {
 		get("/search", (req, res) -> {
 			String phrase = req.queryParams("phrase");
 			String author=req.queryParams("author");
-			String startyear = req.queryParams("startyear");
-			String endyear = req.queryParams("endyear");
+			String startYear = req.queryParams("startyear");
+			String endYear = req.queryParams("endyear");
 
 			if (phrase == null || phrase.isEmpty()) {
 				res.status(400);
@@ -23,7 +23,7 @@ public class ApiServer {
 			}
 
 			try {
-				Map<String, Object> response = bookController.searchWords(phrase);
+				Map<String, Object> response = queryEngine.executeQuery(phrase, author, startYear, endYear);
 
 				res.type("application/json");
 				return gson.toJson(response);
