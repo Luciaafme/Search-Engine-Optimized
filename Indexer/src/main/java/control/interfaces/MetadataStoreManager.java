@@ -6,4 +6,5 @@ import java.io.IOException;
 
 public interface MetadataStoreManager {
 	void update(Metadata metadata) throws IOException;
+	void printAllMetadata();
 }

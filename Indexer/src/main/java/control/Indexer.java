@@ -30,7 +30,7 @@ public class Indexer {
 
 			Metadata metadata = metadataExtractor.getMetadata(bookContent, String.valueOf(bookId));
 			metadataStoreManager.update(metadata);
-
+			metadataStoreManager.printAllMetadata();
 			Set<Word> wordSet = wordExtractor.getWords(bookContent, metadata.getBookID());
 			wordStoreManager.update(wordSet);
 			System.out.println("Finalizado el indexado del libro con ID: " + bookId);

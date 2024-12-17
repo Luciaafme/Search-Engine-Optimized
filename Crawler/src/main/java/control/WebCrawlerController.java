@@ -20,26 +20,19 @@ import java.util.stream.Stream;
 
 public class WebCrawlerController implements CrawlerController {
 	private final Downloader downloader;
-	private final HazelcastInstance hazelcastInstance;
+	private final HazelcastManager hazelcastManager;
 	private final IMap<String, String> booksMap;
 	private final Path datalakePath;
 	private final Integer numBooks;
 
-	public WebCrawlerController(Downloader downloader, String datalakePath, Integer numBooks) {
+	// Constructor corregido: Recibe HazelcastManager como parámetro
+	public WebCrawlerController(Downloader downloader, HazelcastManager hazelcastManager, String datalakePath, Integer numBooks) {
 		this.downloader = downloader;
+		this.hazelcastManager = hazelcastManager; // Asignación correcta
 		this.datalakePath = Path.of(datalakePath);
 		this.numBooks = numBooks;
-		try {
-			this.hazelcastInstance = Hazelcast.newHazelcastInstance(
-					new XmlConfigBuilder(new FileInputStream("Crawler/src/main/resources/hazelcast.xml")).build()
-			);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-
-		this.booksMap = hazelcastInstance.getMap("datalakeMap");
-
-	}
+		this.booksMap = hazelcastManager.getHazelcastInstance().getMap("datalakeMap");
+}
 
 	@Override
 	public void execute() throws IOException, InterruptedException {

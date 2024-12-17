@@ -22,8 +22,40 @@ public class Metadata {
 		return bookID;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public String getDownloadLink() {
+		return downloadLink;
+	}
+
 	public String[] toList() {
 		return new String[]{bookID, name, author, year, language, downloadLink};
 	}
+	@Override
+	public String toString() {
+		return "Metadata {" +
+				"BookID='" + bookID + '\'' +
+				", Title='" + name + '\'' +
+				", Author='" + author + '\'' +
+				", Year='" + year + '\'' +
+				", Language='" + language + '\'' +
+				", DownloadLink='" + downloadLink + '\'' +
+				'}';
+	}
+
 
 }

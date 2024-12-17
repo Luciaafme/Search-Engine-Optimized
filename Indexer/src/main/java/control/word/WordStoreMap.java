@@ -4,6 +4,7 @@ import com.hazelcast.config.XmlConfigBuilder;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
+import control.HazelcastManager;
 import control.interfaces.WordStoreManager;
 import model.Word;
 
@@ -16,15 +17,8 @@ public class WordStoreMap implements WordStoreManager {
     private final HazelcastInstance hazelcastInstance;
     private final IMap<String, Set<Word.WordOccurrence>> wordDatamartMap;
 
-    public WordStoreMap() {
-        try {
-            this.hazelcastInstance = Hazelcast.newHazelcastInstance(
-                    new XmlConfigBuilder(new FileInputStream("Indexer/src/main/resources/hazelcast.xml")).build()
-            );
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Hazelcast configuration file not found.", e);
-        }
-
+    public WordStoreMap(HazelcastManager hazelcastManager) {
+        this.hazelcastInstance = hazelcastManager.getHazelcastInstance();
         this.wordDatamartMap = hazelcastInstance.getMap("wordDatamartMap");
     }
 
