@@ -24,7 +24,6 @@ public class ApiServer {
 
 			try {
 				Map<String, Object> response = queryEngine.executeQuery(phrase, author, startYear, endYear);
-
 				res.type("application/json");
 				return gson.toJson(response);
 			} catch (Exception e) {

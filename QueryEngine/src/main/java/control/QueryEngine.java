@@ -10,65 +10,88 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class QueryEngine {
-	private final HazelcastInstance hazelcastInstance;
 	private final IMap<String, Metadata> metadataDatamartMap;
 	private final IMap<String, Set<Word.WordOccurrence>> wordDatamartMap;
+	private final IMap<String, String> datalakeMap;
 
 	public QueryEngine(HazelcastManager hazelcastManager) {
-		this.hazelcastInstance = hazelcastManager.getHazelcastInstance();
+		HazelcastInstance hazelcastInstance = hazelcastManager.getHazelcastInstance();
 		this.metadataDatamartMap = hazelcastInstance.getMap("metadataMap");
 		this.wordDatamartMap = hazelcastInstance.getMap("wordDatamartMap");
+		this.datalakeMap = hazelcastInstance.getMap("datalakeMap");
 
 	}
 
 	public Map<String, Object> executeQuery(String words, String author, String startYear, String endYear) {
 		Map<String, Object> response = new HashMap<>();
 
-		//response.put("results", wordResults);
+		List<String> wordsList = List.of(words.split(" "));
+		Set<Word.WordOccurrence> matchOcurrences = calculateIntersection(wordsList);
+		List<Metadata> matchMetadata = filterMetadata(matchOcurrences, author, startYear, endYear);
+
+		response.put("response", matchMetadata);
 		return response;
 	}
 
 
-	public static Set<Word.WordOccurrence> calculateIntersection(List<String> words) {
-		if (words == null || words.isEmpty()) {
-			return new HashSet<>(); // Si la lista está vacía, devolvemos un conjunto vacío.
+	private Set<Word.WordOccurrence> calculateIntersection(List<String> wordsList) {
+		if (wordsList == null || wordsList.isEmpty()) {
+			return new HashSet<>();
 		}
 
-		// Recuperar las ocurrencias del primer conjunto
-		Set<Word.WordOccurrence> intersection = this.wordDatamartMap.getOrDefault(words.get(0), new HashSet<>());
+		Set<Word.WordOccurrence> intersection = this.wordDatamartMap.getOrDefault(wordsList.get(0), new HashSet<>());
 
-		// Iterar sobre las palabras restantes y calcular la intersección
-		for (int i = 1; i < words.size(); i++) {
-			String word = words.get(i);
+		for (String word: wordsList) {
 			Set<Word.WordOccurrence> occurrences = this.wordDatamartMap.getOrDefault(word, new HashSet<>());
-			intersection.retainAll(occurrences); // Retenemos solo los elementos comunes
+			intersection.retainAll(occurrences);
 		}
 
-		return intersection; // Conjunto resultante con las ocurrencias comunes.
+		return intersection;
 	}
 
 
 
+	private List<Metadata> filterMetadata(Set<Word.WordOccurrence> occurrences, String author, String startYear, String endYear) {
+		Set<String> bookIDs = occurrences.stream()
+				.map(Word.WordOccurrence::getBook_id)
+				.collect(Collectors.toSet());
 
-	public List<Metadata> filterMetadata(String language, String author, Integer startYear, Integer endYear) {
 		return metadataDatamartMap.values().stream()
-				// Filtro por lenguaje si no es nulo
-				.filter(metadata -> (language == null || metadata.getLanguage().equalsIgnoreCase(language)))
-				// Filtro por autor si no es nulo
+				.filter(metadata -> bookIDs.contains(metadata.getBookID()))
 				.filter(metadata -> (author == null || metadata.getAuthor().equalsIgnoreCase(author)))
-				// Filtro por rango de años si se especifican
 				.filter(metadata -> {
 					try {
 						int year = Integer.parseInt(metadata.getYear());
-						// Verificar si el año está dentro del rango
-						boolean afterStartYear = (startYear == null || year >= startYear);
-						boolean beforeEndYear = (endYear == null || year <= endYear);
+						Integer start = (startYear != null) ? Integer.parseInt(startYear) : null;
+						Integer end = (endYear != null) ? Integer.parseInt(endYear) : null;
+
+						boolean afterStartYear = (start == null || year >= start);
+						boolean beforeEndYear = (end == null || year <= end);
 						return afterStartYear && beforeEndYear;
 					} catch (NumberFormatException e) {
-						return false; // Ignorar entradas con años no válidos
+						return false;
 					}
 				})
 				.collect(Collectors.toList());
 	}
+
+
+	public Map<String, List<String>> getPreviewLines(List<Metadata> metadataList) {
+		Map<String, List<String>> previewLines = new HashMap<>();
+
+		for (Metadata metadata : metadataList) {
+			String bookID = metadata.getBookID();
+
+			if (datalakeMap.containsKey(bookID)) {
+				List<String> lines = Arrays.asList(datalakeMap.get(bookID).split("\n"));
+				previewLines.put(bookID, lines); // se añaden todas las lineas del libro
+				// TODO: añadir al diccionario solo las lineas donde aparecen las palabras
+			}
+		}
+
+		return previewLines;
+	}
+
+
 
 }
