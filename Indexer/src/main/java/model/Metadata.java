@@ -1,13 +1,23 @@
 package model;
 
-public class Metadata {
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
+import com.hazelcast.nio.serialization.DataSerializable;
 
-	private final String bookID;
-	private final String name;
-	private final String author;
-	private final String year;
-	private final String language;
-	private final String downloadLink;
+import java.io.IOException;
+
+public class Metadata implements DataSerializable {
+
+	private String bookID;
+	private String name;
+	private String author;
+	private String year;
+	private String language;
+	private String downloadLink;
+
+	// Constructor vacío requerido por Hazelcast
+	public Metadata() {
+	}
 
 	public Metadata(String bookID, String name, String author, String year, String language, String downloadLink) {
 		this.bookID = bookID;
@@ -45,6 +55,7 @@ public class Metadata {
 	public String[] toList() {
 		return new String[]{bookID, name, author, year, language, downloadLink};
 	}
+
 	@Override
 	public String toString() {
 		return "Metadata {" +
@@ -57,5 +68,23 @@ public class Metadata {
 				'}';
 	}
 
+	@Override
+	public void writeData(ObjectDataOutput out) throws IOException {
+		out.writeUTF(bookID);
+		out.writeUTF(name);
+		out.writeUTF(author);
+		out.writeUTF(year);
+		out.writeUTF(language);
+		out.writeUTF(downloadLink);
+	}
 
+	@Override
+	public void readData(ObjectDataInput in) throws IOException {
+		this.bookID = in.readUTF();
+		this.name = in.readUTF();
+		this.author = in.readUTF();
+		this.year = in.readUTF();
+		this.language = in.readUTF();
+		this.downloadLink = in.readUTF();
+	}
 }
