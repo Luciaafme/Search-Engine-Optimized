@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<hazelcast xmlns="http://www.hazelcast.com/schema/config"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.hazelcast.com/schema/config
-                               https://hazelcast.com/schema/config/hazelcast-config-5.0.xsd">
-<cluster-name>test-cluster</cluster-name>
-<network>
-    <join>
-        <multicast enabled="false"/>
-        <tcp-ip enabled="true">
-            <member>IP</member>
-        </tcp-ip>
-    </join>
-</network>
-
-</hazelcast>
+<hazelcast-client xmlns="http://www.hazelcast.com/schema/client-config"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://www.hazelcast.com/schema/client-config
+                    https://hazelcast.com/schema/client-config/hazelcast-client-config-5.1.xsd">
+    <cluster-name>test-cluster</cluster-name>
+    <network>
+        <cluster-members>
+            <address>IP:5701</address> <!-- Solo la IP, sin puerto -->
+        </cluster-members>
+        <smart-routing>true</smart-routing>
+        <redo-operation>false</redo-operation>
+        <connection-timeout>5000</connection-timeout>
+    </network>
+    <properties>
+        <property name="hazelcast.logging.type">jdk</property>
+    </properties>
+</hazelcast-client>
