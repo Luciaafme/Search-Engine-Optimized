@@ -14,18 +14,20 @@ public class Metadata implements DataSerializable {
 	private String year;
 	private String language;
 	private String downloadLink;
+	private int bookStartLine;
 
 	// Constructor vacío requerido por Hazelcast
 	public Metadata() {
 	}
 
-	public Metadata(String bookID, String name, String author, String year, String language, String downloadLink) {
+	public Metadata(String bookID, String name, String author, String year, String language, String downloadLink, int bookStartLine) {
 		this.bookID = bookID;
 		this.name = name;
 		this.author = author;
 		this.year = year;
 		this.language = language;
 		this.downloadLink = downloadLink;
+		this.bookStartLine = bookStartLine;
 	}
 
 	public String getBookID() {
@@ -51,6 +53,7 @@ public class Metadata implements DataSerializable {
 	public String getDownloadLink() {
 		return downloadLink;
 	}
+	public int getBookStartLine(){return bookStartLine;}
 
 	public String[] toList() {
 		return new String[]{bookID, name, author, year, language, downloadLink};
@@ -76,6 +79,7 @@ public class Metadata implements DataSerializable {
 		out.writeUTF(year);
 		out.writeUTF(language);
 		out.writeUTF(downloadLink);
+		out.writeUTF(String.valueOf(bookStartLine));
 	}
 
 	@Override
@@ -86,5 +90,6 @@ public class Metadata implements DataSerializable {
 		this.year = in.readUTF();
 		this.language = in.readUTF();
 		this.downloadLink = in.readUTF();
+		this.bookStartLine = Integer.parseInt(in.readUTF());
 	}
 }

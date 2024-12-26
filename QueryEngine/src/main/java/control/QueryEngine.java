@@ -53,7 +53,7 @@ public class QueryEngine {
 
 	private List<Metadata> filterMetadata(Set<Word.WordOccurrence> occurrences, String author, String startYear, String endYear) {
 		Set<String> bookIDs = occurrences.stream()
-				.map(Word.WordOccurrence::getBook_id)
+				.map(Word.WordOccurrence::getBookID)
 				.collect(Collectors.toSet());
 
 		return metadataDatamartMap.values().stream()
@@ -95,3 +95,4 @@ public class QueryEngine {
 
 
 }
+

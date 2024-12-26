@@ -1,26 +1,36 @@
 package model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
+import com.hazelcast.nio.serialization.DataSerializable;
+
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-public class Word {
-	private String text;  // Text of the word
-	private List<WordOccurrence> occurrences;  // List of WordOccurrence objects
+public class Word implements DataSerializable {
 
-	public Word(String text, WordOccurrence[] occurrences) {
+	private String text;
+	private Set<WordOccurrence> occurrences;
+
+	// Default constructor required by Hazelcast
+	public Word() {
+		this.occurrences = new HashSet<>();
+	}
+
+	public Word(String text, WordOccurrence occurrence) {
 		this.text = text;
-		this.occurrences = new ArrayList<>(Arrays.asList(occurrences));
+		this.occurrences = new HashSet<>();
+		this.occurrences.add(occurrence);
 	}
 
 	public String getText() {
 		return text;
 	}
 
-	public WordOccurrence[] getOccurrences() {
-		return occurrences.toArray(new WordOccurrence[0]);
+	public Set<WordOccurrence> getOccurrences() {
+		return occurrences;
 	}
 
 	public void addOccurrence(WordOccurrence newOccurrence) {
@@ -28,55 +38,116 @@ public class Word {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder("Word: " + text + "\nOccurrences:\n");
+	public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
+		objectDataOutput.writeUTF(text);
+		objectDataOutput.writeInt(occurrences.size());
 		for (WordOccurrence occurrence : occurrences) {
-			sb.append(occurrence.toString()).append("\n");
+			occurrence.writeData(objectDataOutput);
 		}
-		return sb.toString();
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		Word word = (Word) obj;
-		return Objects.equals(text, word.text);
+	public void readData(ObjectDataInput objectDataInput) throws IOException {
+		text = objectDataInput.readUTF();
+		int size = objectDataInput.readInt();
+		occurrences = new HashSet<>();
+		for (int i = 0; i < size; i++) {
+			WordOccurrence occurrence = new WordOccurrence();
+			occurrence.readData(objectDataInput);
+			occurrences.add(occurrence);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Word{" +
+				"text='" + text + '\'' +
+				", occurrences=" + occurrences +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Word word = (Word) o;
+		return Objects.equals(this.text, word.text);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(text);
+		return Objects.hash(this.text);
 	}
 
-	public static class WordOccurrence implements Serializable {
-		private final String book_id;
-		private final List<Integer> lineOccurrences;
-		private final int frequency;
 
-		public WordOccurrence(String book_id, List<Integer> lineOccurrences) {
-			this.book_id = book_id;
-			this.lineOccurrences = lineOccurrences;
-			this.frequency = lineOccurrences.size();
+	public static class WordOccurrence implements DataSerializable {
+
+		private String bookID;
+		private Set<Integer> lineOccurrences;
+
+		// Default constructor required by Hazelcast
+		public WordOccurrence() {
+			this.lineOccurrences = new HashSet<>();
 		}
 
-		public String getBook_id() {
-			return book_id;
+		public WordOccurrence(String bookID, int lineNumber) {
+			this.bookID = bookID;
+			this.lineOccurrences = new HashSet<>();
+			this.lineOccurrences.add(lineNumber);
 		}
 
-		public List<Integer> getLineOccurrences() {
+		public String getBookID() {
+			return bookID;
+		}
+
+		public Set<Integer> getLineOccurrences() {
 			return lineOccurrences;
 		}
 
-		public int getFrequency() {
-			return frequency;
+		public void addLineOccurrence(int lineNumber) {
+			this.lineOccurrences.add(lineNumber);
+		}
+
+		@Override
+		public void writeData(ObjectDataOutput objectDataOutput) throws IOException {
+			objectDataOutput.writeUTF(bookID);
+			objectDataOutput.writeInt(lineOccurrences.size());
+			for (int line : lineOccurrences) {
+				objectDataOutput.writeInt(line);
+			}
+		}
+
+		@Override
+		public void readData(ObjectDataInput objectDataInput) throws IOException {
+			bookID = objectDataInput.readUTF();
+			int size = objectDataInput.readInt();
+			lineOccurrences = new HashSet<>();
+			for (int i = 0; i < size; i++) {
+				lineOccurrences.add(objectDataInput.readInt());
+			}
 		}
 
 		@Override
 		public String toString() {
-			return "Book ID: " + book_id + "\n" +
-					"Lines: " + lineOccurrences + "\n" +
-					"Frequency: " + frequency + "\n";
+			return "WordOccurrence{" +
+					"bookID='" + bookID + '\'' +
+					", lineOccurrences=" + lineOccurrences +
+					'}';
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			WordOccurrence that = (WordOccurrence) o;
+			return Objects.equals(bookID, that.bookID);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(bookID);
+		}
+
+
 	}
 }
