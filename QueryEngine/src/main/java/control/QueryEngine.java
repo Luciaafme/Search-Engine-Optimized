@@ -76,23 +76,63 @@ public class QueryEngine {
 	}
 
 
-	public Map<String, List<String>> getPreviewLines(List<Metadata> metadataList) {
-		Map<String, List<String>> previewLines = new HashMap<>();
+	public Map<String, List<String>> getPreviewLines(List<Metadata> metadataList, List<Word> wordList) {
+		Map<String, List<String>> previewLinesByBook = new HashMap<>();
 
-		for (Metadata metadata : metadataList) {
-			String bookID = metadata.getBookID();
+		// 1. Create a map of words to their occurrences by book
+		Map<String, Map<String, Set<Integer>>> wordsByBook = new HashMap<>();
 
-			if (datalakeMap.containsKey(bookID)) {
-				List<String> lines = Arrays.asList(datalakeMap.get(bookID).split("\n"));
-				previewLines.put(bookID, lines); // se añaden todas las lineas del libro
-				// TODO: añadir al diccionario solo las lineas donde aparecen las palabras
+		// Organize words and their occurrences by book
+		for (Word word : wordList) {
+			for (Word.WordOccurrence occurrence : word.getOccurrences()) {
+				String bookID = occurrence.getBookID();
+
+				// Initialize the word map for this book if it doesn't exist
+				wordsByBook.putIfAbsent(bookID, new HashMap<>());
+
+				// Add the word and its line occurrences
+				wordsByBook.get(bookID).putIfAbsent(word.getText(), new HashSet<>());
+				wordsByBook.get(bookID).get(word.getText()).addAll(occurrence.getLineOccurrences());
 			}
 		}
 
-		return previewLines;
+		// 2. Process each book's metadata and content
+		for (Metadata metadata : metadataList) {
+			String bookID = metadata.getBookID();
+			int startLine = metadata.getBookStartLine();
+
+			// Skip if no content or no words for this book
+			if (!datalakeMap.containsKey(bookID) || !wordsByBook.containsKey(bookID)) {
+				continue;
+			}
+
+			// Get book content and split into lines
+			String bookContent = datalakeMap.get(bookID);
+			List<String> allLines = Arrays.asList(bookContent.split("\n"));
+
+			// 3. Process each word's occurrences
+			List<String> bookPreviewLines = new ArrayList<>();
+			Map<String, Set<Integer>> wordsInBook = wordsByBook.get(bookID);
+
+			for (Map.Entry<String, Set<Integer>> wordEntry : wordsInBook.entrySet()) {
+				// Find the first valid line occurrence for this word
+				Optional<Integer> firstValidLine = wordEntry.getValue().stream()
+						.filter(lineNumber -> lineNumber >= startLine && lineNumber < allLines.size())
+						.findFirst();
+
+				// Add the line if found
+				firstValidLine.ifPresent(lineNumber ->
+						bookPreviewLines.add(allLines.get(lineNumber)));
+			}
+
+			// 4. Add preview lines if any were found
+			if (!bookPreviewLines.isEmpty()) {
+				previewLinesByBook.put(bookID, bookPreviewLines);
+			}
+		}
+
+		return previewLinesByBook;
 	}
-
-
 
 }
 
