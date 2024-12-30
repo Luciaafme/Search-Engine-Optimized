@@ -19,7 +19,7 @@ public class CrawlerMain {
 
 		//client.shutdown();
 
-		String datalakeFolderPath = "/Users/faridsanchez/Desktop/test_upload_book";
+		String datalakeFolderPath = "";
 
 		int numBooks = 0;
 		Filter filter = new LanguageFilter();
