@@ -1,6 +1,6 @@
 package control;
 
-import com.hazelcast.map.IMap;
+import com.hazelcast.core.IMap;
 import control.interfaces.Downloader;
 import control.interfaces.Filter;
 
@@ -21,7 +21,7 @@ public class BookDownloader implements Downloader {
 
 	@Override
 
-	public boolean downloadAndUploadToHazelcast(int bookId, String urlString, Path datalakePath,IMap<String , String> booksMap)  {
+	public boolean downloadAndUploadToHazelcast(int bookId, String urlString, Path datalakePath, IMap<String , String> booksMap)  {
 		try {
 			URL url = new URL(urlString);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -36,6 +36,10 @@ public class BookDownloader implements Downloader {
 					return false;
 				}
 
+				// Subir contenido a Hazelcast
+				booksMap.put(String.valueOf(bookId), content);
+				System.out.println("Book " + bookId + " uploaded to Hazelcast.");
+
 				Path filePath = datalakePath.resolve(String.valueOf(bookId));
 
 				try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
@@ -43,14 +47,8 @@ public class BookDownloader implements Downloader {
 				}
 				System.out.println("Book downloaded and saved in 'datalake' as '" + bookId);
 
-
-				// Subir contenido a Hazelcast
-				booksMap.put(String.valueOf(bookId), content);
-				System.out.println("Book " + bookId + " uploaded to Hazelcast.");
-
-
-
 				return true;
+
 			} else {
 				System.out.println("Error downloading book " + bookId + ". Code state: " + responseCode);
 			}

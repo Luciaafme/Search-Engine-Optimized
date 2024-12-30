@@ -1,25 +1,18 @@
 package control.word;
 
-import com.hazelcast.config.XmlConfigBuilder;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
-import control.HazelcastManager;
+import com.hazelcast.core.IMap;
 import control.interfaces.WordStoreManager;
 import model.Word;
+import model.WordOccurrence;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class WordStoreMap implements WordStoreManager {
-    private final HazelcastInstance hazelcastInstance;
-    private final IMap<String, Set<Word.WordOccurrence>> wordDatamartMap;
+    private final IMap<String, Set<WordOccurrence>> wordDatamartMap;
 
-    public WordStoreMap(HazelcastManager hazelcastManager) {
-        this.hazelcastInstance = hazelcastManager.getHazelcastInstance();
-        this.wordDatamartMap = hazelcastInstance.getMap("wordDatamartMap");
+    public WordStoreMap(IMap<String, Set<WordOccurrence>> wordDatamartMap) {
+        this.wordDatamartMap = wordDatamartMap;
     }
 
     @Override
@@ -30,7 +23,7 @@ public class WordStoreMap implements WordStoreManager {
             wordDatamartMap.compute(newWord.getText(), (existingWord, existingOccurrences) -> {
                 if (existingOccurrences != null) {
                     // Fusionar las nuevas ocurrencias con las existentes
-                    for (Word.WordOccurrence newOccurrence : newWord.getOccurrences()) {
+                    for (WordOccurrence newOccurrence : newWord.getOccurrences()) {
                         existingOccurrences.add(newOccurrence);
                     }
                     return existingOccurrences;
@@ -48,7 +41,7 @@ public class WordStoreMap implements WordStoreManager {
         wordDatamartMap.entrySet().stream()
                 .forEach(entry -> {
                     String word = entry.getKey();
-                    Set<Word.WordOccurrence> occurrences = entry.getValue();
+                    Set<WordOccurrence> occurrences = entry.getValue();
                     System.out.println("Palabra: " + word);
                     occurrences.forEach(occurrence -> {
                         System.out.println("  - Libro: " + occurrence.getBookID() +

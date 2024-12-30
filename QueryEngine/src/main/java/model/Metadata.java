@@ -79,7 +79,7 @@ public class Metadata implements DataSerializable {
 		out.writeUTF(year);
 		out.writeUTF(language);
 		out.writeUTF(downloadLink);
-		out.writeUTF(String.valueOf(bookStartLine));
+		out.writeInt(bookStartLine);
 	}
 
 	@Override
@@ -90,6 +90,6 @@ public class Metadata implements DataSerializable {
 		this.year = in.readUTF();
 		this.language = in.readUTF();
 		this.downloadLink = in.readUTF();
-		this.bookStartLine = Integer.parseInt(in.readUTF());
+		this.bookStartLine = in.readInt();
 	}
 }

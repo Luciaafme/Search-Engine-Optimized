@@ -2,7 +2,7 @@ package control;
 
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
+import com.hazelcast.core.IMap;
 
 public class HazelcastTest {
     public static void main(String[] args) {

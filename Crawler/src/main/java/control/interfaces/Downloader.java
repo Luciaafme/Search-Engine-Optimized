@@ -1,6 +1,6 @@
 package control.interfaces;
 
-import com.hazelcast.map.IMap;
+import com.hazelcast.core.IMap;
 
 import java.nio.file.Path;
 

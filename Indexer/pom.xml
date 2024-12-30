@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
-            <version>5.5.0</version> <!-- Cambia a la última versión estable -->
+            <version>3.12.13</version>
         </dependency>
 
         <dependency>

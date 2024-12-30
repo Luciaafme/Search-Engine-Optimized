@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config
+                              http://www.hazelcast.com/schema/config/hazelcast-config-3.12.xsd">
+
+    <group>
+        <name>my-distributed-books</name>
+    </group>
+
+    <network>
+        <port auto-increment="true">5701</port>
+        <join>
+            <multicast enabled="false"/>
+            <tcp-ip enabled="true">
+                <member>127.0.0.1</member>
+            </tcp-ip>
+        </join>
+    </network>
+
+    <map name="metadataMap">
+        <backup-count>1</backup-count>
+    </map>
+
+    <map name="wordDatamartMap">
+        <backup-count>1</backup-count>
+    </map>
+
+    <map name="datalakeMap">
+        <backup-count>1</backup-count>
+    </map>
+</hazelcast>

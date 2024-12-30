@@ -53,7 +53,10 @@ public class Metadata implements DataSerializable {
 	public String getDownloadLink() {
 		return downloadLink;
 	}
-	public int getBookStartLine(){return bookStartLine;}
+
+	public int getBookStartLine() {
+		return bookStartLine;
+	}
 
 	public String[] toList() {
 		return new String[]{bookID, name, author, year, language, downloadLink};
@@ -68,6 +71,7 @@ public class Metadata implements DataSerializable {
 				", Year='" + year + '\'' +
 				", Language='" + language + '\'' +
 				", DownloadLink='" + downloadLink + '\'' +
+				", BookStartLine=" + bookStartLine +
 				'}';
 	}
 
@@ -79,7 +83,7 @@ public class Metadata implements DataSerializable {
 		out.writeUTF(year);
 		out.writeUTF(language);
 		out.writeUTF(downloadLink);
-		out.writeUTF(String.valueOf(bookStartLine));
+		out.writeInt(bookStartLine); // Corrección: escribir directamente el entero
 	}
 
 	@Override
@@ -90,6 +94,6 @@ public class Metadata implements DataSerializable {
 		this.year = in.readUTF();
 		this.language = in.readUTF();
 		this.downloadLink = in.readUTF();
-		this.bookStartLine = Integer.parseInt(in.readUTF());
+		this.bookStartLine = in.readInt(); // Corrección: leer directamente el entero
 	}
 }

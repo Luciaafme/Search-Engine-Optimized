@@ -2,7 +2,7 @@ package control.word;
 
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
-import com.hazelcast.map.MapEvent;
+import com.hazelcast.core.MapEvent;
 import control.Indexer;
 
 public class CustomEntryListener implements EntryListener<String, String> {
@@ -34,11 +34,6 @@ public class CustomEntryListener implements EntryListener<String, String> {
         public void entryEvicted(EntryEvent<String, String> event) {
             System.out.println("Elemento desalojado: " + event.getKey());
         }
-
-    @Override
-    public void entryExpired(EntryEvent<String, String> entryEvent) {
-
-    }
 
     @Override
     public void mapCleared(MapEvent mapEvent) {

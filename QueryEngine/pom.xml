@@ -89,10 +89,14 @@
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <version>5.5.0</version> <!-- Cambia a la última versión estable -->
+            <artifactId>hazelcast-client</artifactId>
+            <version>3.12.13</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>3.12.13</version>
+        </dependency>
     </dependencies>
 
 </project>

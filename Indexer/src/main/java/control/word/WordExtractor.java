@@ -3,6 +3,7 @@ package control.word;
 import control.interfaces.WordCleanerManager;
 import control.interfaces.WordExtractorManager;
 import model.Word;
+import model.WordOccurrence;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -60,7 +61,7 @@ public class WordExtractor implements WordExtractorManager {
 				.orElse(null);
 
 		if (targetWord != null) {
-			Word.WordOccurrence targetOccurrence = targetWord.getOccurrences().stream()
+			WordOccurrence targetOccurrence = targetWord.getOccurrences().stream()
 					.filter(occurrence -> occurrence.getBookID().equals(bookID))
 					.findFirst()
 					.orElse(null);
@@ -68,10 +69,10 @@ public class WordExtractor implements WordExtractorManager {
 			if (targetOccurrence != null) {
 				targetOccurrence.addLineOccurrence(lineNumber);
 			} else {
-				targetWord.addOccurrence(new Word.WordOccurrence(bookID, lineNumber));
+				targetWord.addOccurrence(new WordOccurrence(bookID, lineNumber));
 			}
 		} else {
-			indexedWordSet.add(new Word(cleanWord, new Word.WordOccurrence(bookID, lineNumber)));
+			indexedWordSet.add(new Word(cleanWord, new WordOccurrence(bookID, lineNumber)));
 		}
 	}
 }

@@ -1,8 +1,7 @@
 package control;
 
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
+import com.hazelcast.core.IMap;
 import model.Metadata;
 import model.Word;
 
@@ -14,22 +13,31 @@ public class QueryEngine {
 	private final IMap<String, Set<Word.WordOccurrence>> wordDatamartMap;
 	private final IMap<String, String> datalakeMap;
 
-	public QueryEngine(HazelcastManager hazelcastManager) {
-		HazelcastInstance hazelcastInstance = hazelcastManager.getHazelcastInstance();
-		this.metadataDatamartMap = hazelcastInstance.getMap("metadataMap");
-		this.wordDatamartMap = hazelcastInstance.getMap("wordDatamartMap");
-		this.datalakeMap = hazelcastInstance.getMap("datalakeMap");
+	public QueryEngine(IMap<String, String> datalakeMap,
+					   IMap<String, Metadata> metadataDatamartMap,
+					   IMap<String, Set<Word.WordOccurrence>> wordDatamartMap) {
+
+		this.metadataDatamartMap = metadataDatamartMap;
+		this.wordDatamartMap = wordDatamartMap;
+		this.datalakeMap = datalakeMap;
+
 
 	}
 
 	public Map<String, Object> executeQuery(String words, String author, String startYear, String endYear) {
 		Map<String, Object> response = new HashMap<>();
 
-		List<String> wordsList = List.of(words.split(" "));
-		Set<Word.WordOccurrence> matchOcurrences = calculateIntersection(wordsList);
+		List<String> wordList = List.of(words.split(" "));
+		Set<Word.WordOccurrence> matchOcurrences = calculateIntersection(wordList);
 		List<Metadata> matchMetadata = filterMetadata(matchOcurrences, author, startYear, endYear);
 
-		response.put("response", matchMetadata);
+		Map<String, Map<String, Object>> results = new HashMap<>();
+
+		for(Metadata metadata: matchMetadata){
+			Map<String, Object> auxiliar = getPreviewLines(metadata, wordList);
+			results.put(metadata.getBookID(), auxiliar);
+		}
+		response.put("response", results);
 		return response;
 	}
 
@@ -76,63 +84,39 @@ public class QueryEngine {
 	}
 
 
-	public Map<String, List<String>> getPreviewLines(List<Metadata> metadataList, List<Word> wordList) {
-		Map<String, List<String>> previewLinesByBook = new HashMap<>();
+	public Map<String, Object> getPreviewLines(Metadata metadata, List<String> wordList) {
 
-		// 1. Create a map of words to their occurrences by book
-		Map<String, Map<String, Set<Integer>>> wordsByBook = new HashMap<>();
+		Map<String, Object> previewLines = new HashMap<>();
+		List<String> lines = new ArrayList<>();
 
-		// Organize words and their occurrences by book
-		for (Word word : wordList) {
-			for (Word.WordOccurrence occurrence : word.getOccurrences()) {
-				String bookID = occurrence.getBookID();
+		String bookContent = datalakeMap.get(metadata.getBookID());
+		String[] bookLines = bookContent.split("\n");
 
-				// Initialize the word map for this book if it doesn't exist
-				wordsByBook.putIfAbsent(bookID, new HashMap<>());
+		for (String word : wordList) {
+			int wordLineNumber = wordDatamartMap.get(word).stream()
+					.filter(occurrence -> occurrence.getBookID().equals(metadata.getBookID()))
+					.findFirst()
+					.get()
+					.getLineOccurrences()
+					.iterator()
+					.next();
 
-				// Add the word and its line occurrences
-				wordsByBook.get(bookID).putIfAbsent(word.getText(), new HashSet<>());
-				wordsByBook.get(bookID).get(word.getText()).addAll(occurrence.getLineOccurrences());
+			int actualLineIndex = wordLineNumber + metadata.getBookStartLine();
+
+			if (actualLineIndex >= 0 && actualLineIndex < bookLines.length) {
+				lines.add(bookLines[actualLineIndex]);
+			} else {
+				throw new IllegalArgumentException("El número de línea " + wordLineNumber + " está fuera del rango del contenido del libro.");
 			}
 		}
 
-		// 2. Process each book's metadata and content
-		for (Metadata metadata : metadataList) {
-			String bookID = metadata.getBookID();
-			int startLine = metadata.getBookStartLine();
+		previewLines.put("metadata", metadata);
+		previewLines.put("lines", lines);
 
-			// Skip if no content or no words for this book
-			if (!datalakeMap.containsKey(bookID) || !wordsByBook.containsKey(bookID)) {
-				continue;
-			}
-
-			// Get book content and split into lines
-			String bookContent = datalakeMap.get(bookID);
-			List<String> allLines = Arrays.asList(bookContent.split("\n"));
-
-			// 3. Process each word's occurrences
-			List<String> bookPreviewLines = new ArrayList<>();
-			Map<String, Set<Integer>> wordsInBook = wordsByBook.get(bookID);
-
-			for (Map.Entry<String, Set<Integer>> wordEntry : wordsInBook.entrySet()) {
-				// Find the first valid line occurrence for this word
-				Optional<Integer> firstValidLine = wordEntry.getValue().stream()
-						.filter(lineNumber -> lineNumber >= startLine && lineNumber < allLines.size())
-						.findFirst();
-
-				// Add the line if found
-				firstValidLine.ifPresent(lineNumber ->
-						bookPreviewLines.add(allLines.get(lineNumber)));
-			}
-
-			// 4. Add preview lines if any were found
-			if (!bookPreviewLines.isEmpty()) {
-				previewLinesByBook.put(bookID, bookPreviewLines);
-			}
-		}
-
-		return previewLinesByBook;
+		return previewLines;
 	}
+
+
 
 }
 

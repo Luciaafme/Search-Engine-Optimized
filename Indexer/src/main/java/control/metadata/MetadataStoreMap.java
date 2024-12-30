@@ -1,19 +1,16 @@
 package control.metadata;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
-import control.HazelcastManager;
+
+import com.hazelcast.core.IMap;
 import control.interfaces.MetadataStoreManager;
 import model.Metadata;
 
 public class MetadataStoreMap implements MetadataStoreManager {
 
-    private final HazelcastInstance hazelcastInstance;
     private final IMap<String, Metadata> metadataMap;
 
-    public MetadataStoreMap(HazelcastManager hazelcastManager) {
-        this.hazelcastInstance = hazelcastManager.getHazelcastInstance();
-        this.metadataMap = hazelcastInstance.getMap("metadataMap");
+    public MetadataStoreMap(IMap<String, Metadata> metadataMap) {
+        this.metadataMap = metadataMap;
 
     }
     @Override

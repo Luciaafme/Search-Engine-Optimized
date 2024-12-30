@@ -1,15 +1,10 @@
 package control;
 
 
-import com.hazelcast.config.XmlConfigBuilder;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
+
+import com.hazelcast.core.IMap;
 import control.interfaces.CrawlerController;
 import control.interfaces.Downloader;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -20,18 +15,16 @@ import java.util.stream.Stream;
 
 public class WebCrawlerController implements CrawlerController {
 	private final Downloader downloader;
-	private final HazelcastManager hazelcastManager;
-	private final IMap<String, String> booksMap;
+	private final IMap<String, String> datalakeMap;
 	private final Path datalakePath;
 	private final Integer numBooks;
 
 	// Constructor corregido: Recibe HazelcastManager como parámetro
-	public WebCrawlerController(Downloader downloader, HazelcastManager hazelcastManager, String datalakePath, Integer numBooks) {
+	public WebCrawlerController(Downloader downloader, IMap<String, String> datalakeMap, String datalakePath, Integer numBooks) {
 		this.downloader = downloader;
-		this.hazelcastManager = hazelcastManager; // Asignación correcta
 		this.datalakePath = Path.of(datalakePath);
 		this.numBooks = numBooks;
-		this.booksMap = hazelcastManager.getHazelcastInstance().getMap("datalakeMap");
+		this.datalakeMap = datalakeMap;
 }
 
 	@Override
@@ -43,7 +36,7 @@ public class WebCrawlerController implements CrawlerController {
 			int bookId = random.nextInt(99999);
 			String urlString = "https://www.gutenberg.org/cache/epub/" + bookId + "/pg" + bookId + ".txt";
 
-			boolean success = downloader.downloadAndUploadToHazelcast(bookId, urlString, datalakePath ,booksMap);
+			boolean success = downloader.downloadAndUploadToHazelcast(bookId, urlString, datalakePath ,datalakeMap);
 			if (success) {
 				booksDownloaded++;
 				System.out.println("Books downloaded: " + booksDownloaded);
@@ -52,7 +45,7 @@ public class WebCrawlerController implements CrawlerController {
 	}
 
 
-	public void upload(String datalakeDirectory) throws IOException {
+	public void uploadBookToMap(String datalakeDirectory) throws IOException {
 		Path datalakePath = Paths.get(datalakeDirectory);
 
 		// Leer los archivos del directorio
@@ -66,7 +59,7 @@ public class WebCrawlerController implements CrawlerController {
 					String bookId = file.getFileName().toString();
 
 					// Subir a Hazelcast
-					booksMap.put(bookId, content);
+					datalakeMap.put(bookId, content);
 
 					System.out.println("Libro " + bookId + " subido a Hazelcast.");
 				} catch (IOException | NumberFormatException e) {
@@ -74,5 +67,6 @@ public class WebCrawlerController implements CrawlerController {
 				}
 			});
 		}
+		System.out.println(datalakeMap.keySet().size());
 	}
 }
