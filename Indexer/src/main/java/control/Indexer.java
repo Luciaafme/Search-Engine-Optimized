@@ -6,9 +6,9 @@ import control.interfaces.MetadataStoreManager;
 import control.interfaces.WordExtractorManager;
 import control.interfaces.WordStoreManager;
 import model.Metadata;
-import model.Word;
+import java.util.List;
+import java.util.Map;
 
-import java.util.Set;
 
 public class Indexer {
 
@@ -17,23 +17,25 @@ public class Indexer {
 	private final MetadataExtractorManager metadataExtractor;
 	private final WordExtractorManager wordExtractor;
 
-	public Indexer(WordStoreManager wordStoreManager, MetadataStoreManager metadataStoreManager,
-				   MetadataExtractorManager metadataExtractor, WordExtractorManager wordExtractor) {
+	public Indexer(WordStoreManager wordStoreManager,
+				   MetadataStoreManager metadataStoreManager,
+				   MetadataExtractorManager metadataExtractor,
+				   WordExtractorManager wordExtractor) {
 		this.wordStoreManager = wordStoreManager;
 		this.metadataStoreManager = metadataStoreManager;
 		this.metadataExtractor = metadataExtractor;
 		this.wordExtractor = wordExtractor;
 	}
 
-	public void execute(String bookId, String  bookContent) {
+	public void execute(String bookID, String  bookContent) {
 		try {
 
-			Metadata metadata = metadataExtractor.getMetadata(bookContent, String.valueOf(bookId));
+			Metadata metadata = metadataExtractor.getMetadata(bookContent, String.valueOf(bookID));
 			metadataStoreManager.update(metadata);
 			metadataStoreManager.printAllMetadata();
-			Set<Word> wordSet = wordExtractor.getWords(bookContent, metadata.getBookID());
-			wordStoreManager.update(wordSet);
-			System.out.println("Finalizado el indexado del libro con ID: " + bookId);
+			Map<String, List<Integer>> indexedWordMap = wordExtractor.getWords(bookContent, metadata.getBookID());
+			wordStoreManager.update(bookID, indexedWordMap);
+			System.out.println("Finalizado el indexado del libro con ID: " + bookID);
 			wordStoreManager.printMap();
 
 

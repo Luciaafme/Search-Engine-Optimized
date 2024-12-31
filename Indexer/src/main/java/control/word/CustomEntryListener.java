@@ -5,7 +5,7 @@ import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.MapEvent;
 import control.Indexer;
 
-public class CustomEntryListener implements EntryListener<String, String> {
+public class CustomEntryListener<S, S1> implements EntryListener<String, String> {
     private final Indexer indexer;
 
     public CustomEntryListener(Indexer indexer) {

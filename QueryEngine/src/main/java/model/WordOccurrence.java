@@ -36,12 +36,4 @@ public class WordOccurrence implements Serializable {
 	public int hashCode() {
 		return Objects.hash(bookID);
 	}
-
-	@Override
-	public String toString() {
-		return "WordOccurrence{" +
-				"bookID='" + bookID + '\'' +
-				", lineNumbers=" + lineNumbers +
-				'}';
-	}
 }

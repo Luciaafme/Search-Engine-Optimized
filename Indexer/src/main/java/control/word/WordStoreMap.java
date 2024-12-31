@@ -2,51 +2,52 @@ package control.word;
 
 import com.hazelcast.core.IMap;
 import control.interfaces.WordStoreManager;
-import model.Word;
 import model.WordOccurrence;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class WordStoreMap implements WordStoreManager {
-    private final IMap<String, Set<WordOccurrence>> wordDatamartMap;
+    private final IMap<String, List<WordOccurrence>> wordDatamartMap;
 
-    public WordStoreMap(IMap<String, Set<WordOccurrence>> wordDatamartMap) {
+    public WordStoreMap(IMap<String, List<WordOccurrence>> wordDatamartMap) {
         this.wordDatamartMap = wordDatamartMap;
     }
 
     @Override
-    public void update(Set<Word> newWordSet) {
+    public void update(String bookID, Map<String, List<Integer>> newWordsMap) {
         System.out.println("Inicia update...");
 
-        for (Word newWord : newWordSet) {
-            wordDatamartMap.compute(newWord.getText(), (existingWord, existingOccurrences) -> {
-                if (existingOccurrences != null) {
-                    // Fusionar las nuevas ocurrencias con las existentes
-                    for (WordOccurrence newOccurrence : newWord.getOccurrences()) {
-                        existingOccurrences.add(newOccurrence);
-                    }
-                    return existingOccurrences;
-                } else {
-                    // Crear un nuevo conjunto de ocurrencias si la palabra no existe
-                    return new HashSet<>(newWord.getOccurrences());
-                }
-            });
+        for (Map.Entry<String, List<Integer>> entry : newWordsMap.entrySet()) {
+            String word = entry.getKey();
+            List<Integer> lineNumberList = entry.getValue();
+
+            // Create new occurrence
+            WordOccurrence newOccurrence = new WordOccurrence(bookID, lineNumberList);
+
+            // Get existing occurrences or create new list
+            List<WordOccurrence> existingOccurrences = wordDatamartMap.getOrDefault(word, new ArrayList<>());
+
+            // Check if we already have an occurrence for this book
+            boolean exists = existingOccurrences.stream()
+                    .anyMatch(occurrence -> occurrence.getBookID().equals(bookID));
+
+            if (!exists) {
+                existingOccurrences.add(newOccurrence);
+                wordDatamartMap.put(word, existingOccurrences);
+            }
         }
     }
 
     @Override
     public void printMap() {
-        // Imprimir el contenido del mapa para verificar
-        wordDatamartMap.entrySet().stream()
-                .forEach(entry -> {
-                    String word = entry.getKey();
-                    Set<WordOccurrence> occurrences = entry.getValue();
-                    System.out.println("Palabra: " + word);
-                    occurrences.forEach(occurrence -> {
-                        System.out.println("  - Libro: " + occurrence.getBookID() +
-                                ", Líneas: " + occurrence.getLineOccurrences());
-                    });
-                });
+        wordDatamartMap.forEach((word, occurrences) -> {
+            System.out.println("Word: " + word);
+            for (WordOccurrence occurrence : occurrences) {
+                System.out.println("  Book: " + occurrence.getBookID());
+                System.out.println("  Lines: " + occurrence.getLineNumbers());
+            }
+        });
     }
 }

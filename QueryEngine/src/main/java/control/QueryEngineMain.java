@@ -3,10 +3,12 @@ package control;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import model.Metadata;
-import model.Word;
+import model.WordOccurrence;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 import static spark.Spark.port;
 
@@ -23,20 +25,26 @@ public class QueryEngineMain {
 
 		IMap<String, String> datalakeMap = clientInstance.getMap("datalakeMap");
 		IMap<String, Metadata> metadataDatamartMap = clientInstance.getMap("metadataMap");
-		IMap<String, Set<Word.WordOccurrence>> wordDatamartMap = clientInstance.getMap("wordDatamartMap");
+		IMap<String, List<WordOccurrence>> wordDatamartMap = clientInstance.getMap("wordDatamartMap");
 
 		QueryEngine queryEngine= new QueryEngine(datalakeMap, metadataDatamartMap, wordDatamartMap);
 
 		//configureRoutes(queryEngine);
 
 		// test del query
-		Map<String, Object> result = queryEngine.executeQuery("car hello moto", null, null, null);
+		Map<String, Object> results = queryEngine.executeQuery("two famous", null, null, null);
+
+		// print line where the wrod appear
+		List<String> linesList = Optional.ofNullable(results)
+				.map(m -> (Map<String, Object>) m.get("response"))
+				.map(m -> (Map<String, Object>) m.get("10088"))
+				.map(m -> (List<String>) m.get("lines"))
+				.orElse(Collections.emptyList());
 
 
-		// Imprimir resultado
-		System.out.println("Resultado de la consulta:");
-		result.forEach((key, value) -> {
-			System.out.println(key + ": " + value);
-		});
+		System.out.println(linesList.get(0));
+		System.out.println(linesList.get(1));
+
+
 	}
 }

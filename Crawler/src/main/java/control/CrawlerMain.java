@@ -19,7 +19,8 @@ public class CrawlerMain {
 
 		//client.shutdown();
 
-		String datalakeFolderPath = "";
+		System.out.println(args[0]);
+		String datalakeFolderPath = args[0];
 
 		int numBooks = 0;
 		Filter filter = new LanguageFilter();
