@@ -30,19 +30,8 @@ public class MetadataExtractor implements MetadataExtractorManager {
 		String year = yearMatcher.find() ? yearMatcher.group(1).trim() : "UNKNOWN";
 		String downloadLink = "https://www.gutenberg.org/cache/epub/" + bookID + "/pg" + bookID + ".txt";
 
-		// To save the line where the book start
-		String[] lines = inputString.split("\n");
-		Pattern startMarker = Pattern.compile("\\*\\*\\* START OF THE PROJECT GUTENBERG EBOOK .+ \\*\\*\\*");
 
-		int bookStartLine = 0;
-
-		for (int i = 0; i < lines.length; i++) {
-			if (startMarker.matcher(lines[i].trim()).matches()) {
-				bookStartLine = i + 1;
-			}
-		}
-
-		return new Metadata(bookID, title, author, year, language, downloadLink, bookStartLine);
+		return new Metadata(bookID, title, author, year, language, downloadLink);
 	}
 
 }
