@@ -13,7 +13,7 @@ public class ApiServer {
 	public static void configureRoutes(QueryEngine queryEngine) {
 		get("/search", (req, res) -> {
 			String phrase = req.queryParams("phrase");
-			String author=req.queryParams("author");
+			String author = req.queryParams("author");
 			String startYear = req.queryParams("startyear");
 			String endYear = req.queryParams("endyear");
 

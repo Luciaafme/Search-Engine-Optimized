@@ -5,6 +5,8 @@ import model.Metadata;
 import model.WordOccurrence;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class QueryEngine {
@@ -26,9 +28,7 @@ public class QueryEngine {
 
 		List<String> wordList = List.of(words.split(" "));
 		Set<String> matchingBookIds = calculateIntersection(wordList);
-		//System.out.println(matchingBookIds);
 		List<Metadata> matchMetadata = filterMetadata(matchingBookIds, author, startYear, endYear);
-		//System.out.println(matchMetadata);
 
 		// 2º mapa -> claves: bookID donde aparecen todas las palabras de la query -> valores: otro mapa interno
 		Map<String, Object> results = new HashMap<>();
@@ -42,8 +42,6 @@ public class QueryEngine {
 	}
 
 	private Set<String> calculateIntersection(List<String> wordsList) {
-
-		//System.out.println("palabra a buscar:" + wordsList.toString());
 
 		if (wordsList == null || wordsList.isEmpty()) {
 			return new HashSet<>();
@@ -65,7 +63,6 @@ public class QueryEngine {
 			intersection.retainAll(wordBookIds);
 		}
 
-		//System.out.println("interseccion" + intersection);
 		return intersection;
 	}
 
@@ -91,10 +88,9 @@ public class QueryEngine {
 
 	public Map<String, Object> getPreviewLines(Metadata metadata, List<String> wordList) {
 		Map<String, Object> previewLines = new HashMap<>();
-		List<String> lines = new ArrayList<>();
+		List<Integer> wordsLineNumberList = new ArrayList<>();
 
 		String bookContent = datalakeMap.get(metadata.getBookID());
-		String[] bookLines = bookContent.split("\n");
 
 		for (String word : wordList) {
 			List<WordOccurrence> occurrences = wordDatamartMap.get(word);
@@ -106,26 +102,40 @@ public class QueryEngine {
 				if (bookOccurrence.isPresent()) {
 					List<Integer> lineNumbers = bookOccurrence.get().getLineNumbers();
 					if (!lineNumbers.isEmpty()) {
-						int wordLineNumber = lineNumbers.get(0);  // Get first occurrence
-						int actualLineIndex = wordLineNumber + metadata.getBookStartLine() + 3; // se le suma 3 porque es el margen de error
-						//System.out.println("number" + actualLineIndex);
-
-						if (actualLineIndex >= 0 && actualLineIndex < bookLines.length) {
-							lines.add(bookLines[actualLineIndex]);
-							// test
-							//System.out.println(bookLines[actualLineIndex]);
-						} else {
-							throw new IllegalArgumentException(
-									"Line number " + wordLineNumber + " is out of range for book content.");
-						}
+						wordsLineNumberList.add(lineNumbers.get(0));  // Get first occurrence from all words in the query
 					}
 				}
 			}
 		}
 
+
+
 		previewLines.put("metadata", metadata);
-		previewLines.put("lines", lines);
+		previewLines.put("lines", getWordLines(bookContent, wordsLineNumberList));
 
 		return previewLines;
+	}
+
+	public List<String>  getWordLines(String bookContent, List<Integer> wordLineNumberList) {
+
+		String regex = "(?i)\\*\\*\\* START OF THE PROJECT GUTENBERG EBOOK .*? \\*\\*\\*(.*?)\\*\\*\\* END OF THE PROJECT GUTENBERG EBOOK .*? \\*\\*\\*";
+		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL); // DOTALL permite capturar contenido en múltiples líneas
+		Matcher matcher = pattern.matcher(bookContent);
+
+		List<String> selectedLines = new ArrayList<>();
+
+		if (matcher.find()) {
+			String extractedContent = matcher.group(1).trim();
+			String[] bookLinesList = extractedContent.split("\n");
+
+			for(int wordLineNumber: wordLineNumberList){
+				selectedLines.add(bookLinesList[wordLineNumber]);
+			}
+
+			return selectedLines;
+
+		} else {
+			return new ArrayList<>();
+		}
 	}
 }

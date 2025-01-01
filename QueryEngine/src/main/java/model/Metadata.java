@@ -53,7 +53,10 @@ public class Metadata implements DataSerializable {
 	public String getDownloadLink() {
 		return downloadLink;
 	}
-	public int getBookStartLine(){return bookStartLine;}
+
+	public int getBookStartLine() {
+		return bookStartLine;
+	}
 
 	public String[] toList() {
 		return new String[]{bookID, name, author, year, language, downloadLink};

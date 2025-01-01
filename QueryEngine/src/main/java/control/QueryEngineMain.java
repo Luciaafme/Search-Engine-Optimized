@@ -5,12 +5,10 @@ import com.hazelcast.core.IMap;
 import model.Metadata;
 import model.WordOccurrence;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import java.util.*;
-
-import static spark.Spark.port;
+import java.util.Optional;
 
 public class QueryEngineMain {
 	public static void main(String[] args) {
@@ -27,12 +25,13 @@ public class QueryEngineMain {
 		IMap<String, Metadata> metadataDatamartMap = clientInstance.getMap("metadataMap");
 		IMap<String, List<WordOccurrence>> wordDatamartMap = clientInstance.getMap("wordDatamartMap");
 
-		QueryEngine queryEngine= new QueryEngine(datalakeMap, metadataDatamartMap, wordDatamartMap);
+		QueryEngine queryEngine = new QueryEngine(datalakeMap, metadataDatamartMap, wordDatamartMap);
 
 		//configureRoutes(queryEngine);
 
 		// test del query
-		Map<String, Object> results = queryEngine.executeQuery("two famous", null, null, null);
+		String query = "two famous floods help music";
+		Map<String, Object> results = queryEngine.executeQuery(query, null, null, null);
 
 		// print line where the wrod appear
 		List<String> linesList = Optional.ofNullable(results)
@@ -42,9 +41,11 @@ public class QueryEngineMain {
 				.orElse(Collections.emptyList());
 
 
-		System.out.println(linesList.get(0));
-		System.out.println(linesList.get(1));
-
+		// check results
+		List<String> stop = List.of(query.split(" "));
+		for(int i=0; i<stop.size(); i++){
+			System.out.println(stop.get(i) + " -> " + linesList.get(i));
+		}
 
 	}
 }

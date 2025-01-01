@@ -1,10 +1,10 @@
 package control;
 
 
-
 import com.hazelcast.core.IMap;
 import control.interfaces.CrawlerController;
 import control.interfaces.Downloader;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -25,7 +25,7 @@ public class WebCrawlerController implements CrawlerController {
 		this.datalakePath = Path.of(datalakePath);
 		this.numBooks = numBooks;
 		this.datalakeMap = datalakeMap;
-}
+	}
 
 	@Override
 	public void execute() throws IOException, InterruptedException {
@@ -36,7 +36,7 @@ public class WebCrawlerController implements CrawlerController {
 			int bookId = random.nextInt(99999);
 			String urlString = "https://www.gutenberg.org/cache/epub/" + bookId + "/pg" + bookId + ".txt";
 
-			boolean success = downloader.downloadAndUploadToHazelcast(bookId, urlString, datalakePath ,datalakeMap);
+			boolean success = downloader.downloadAndUploadToHazelcast(bookId, urlString, datalakePath, datalakeMap);
 			if (success) {
 				booksDownloaded++;
 				System.out.println("Books downloaded: " + booksDownloaded);

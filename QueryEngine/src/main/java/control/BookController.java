@@ -2,17 +2,14 @@ package control;
 
 import control.interfaces.QueryEngineManager;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class BookController {
 
-	private  String WORDS_DATAMART_PATH;
-	private  String DATALAKE_PATH;
-	private  String METADATA_FILE_PATH;
+	private String WORDS_DATAMART_PATH;
+	private String DATALAKE_PATH;
+	private String METADATA_FILE_PATH;
 
 	private QueryEngineManager queryEngine;
 
@@ -25,7 +22,6 @@ public class BookController {
 
 	public Map<String, Object> searchWords(String phrase) {
 		Map<String, Object> response = new HashMap<>();
-
 
 
 		//response.put("results", wordResults);

@@ -3,8 +3,10 @@ package control.word;
 import control.interfaces.WordCleanerManager;
 import control.interfaces.WordExtractorManager;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +19,7 @@ public class WordExtractor implements WordExtractorManager {
 	}
 
 	@Override
-	public Map<String, List<Integer>> getWords(String bookContent, String bookID) throws IOException {
+	public Map<String, List<Integer>> getWords(String bookContent, String bookID) {
 		/*
 		esta funcion devuelve un mapa con las palabras del libro como clave y una lista con los numeros de linea donde aparecen dichas palabras como valor
 		 */
@@ -30,7 +32,7 @@ public class WordExtractor implements WordExtractorManager {
 		if (matcher.find()) {
 			String extractedContent = matcher.group(1).trim();
 			String[] lines = extractedContent.split("\n");
-			int lineNumber = 1;
+			int lineNumber = 0;
 
 			for (String line : lines) {
 				processLine(line, lineNumber, indexedWordMap);

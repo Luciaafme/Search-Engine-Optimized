@@ -6,6 +6,7 @@ import control.interfaces.MetadataStoreManager;
 import control.interfaces.WordExtractorManager;
 import control.interfaces.WordStoreManager;
 import model.Metadata;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class Indexer {
 		this.wordExtractor = wordExtractor;
 	}
 
-	public void execute(String bookID, String  bookContent) {
+	public void execute(String bookID, String bookContent) {
 		try {
 
 			Metadata metadata = metadataExtractor.getMetadata(bookContent, String.valueOf(bookID));

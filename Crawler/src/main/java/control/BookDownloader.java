@@ -21,7 +21,7 @@ public class BookDownloader implements Downloader {
 
 	@Override
 
-	public boolean downloadAndUploadToHazelcast(int bookId, String urlString, Path datalakePath, IMap<String , String> booksMap)  {
+	public boolean downloadAndUploadToHazelcast(int bookId, String urlString, Path datalakePath, IMap<String, String> booksMap) {
 		try {
 			URL url = new URL(urlString);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();

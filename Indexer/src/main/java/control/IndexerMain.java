@@ -14,7 +14,6 @@ import model.WordOccurrence;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 public class IndexerMain {
 	public static void main(String[] args) throws IOException {
@@ -38,8 +37,6 @@ public class IndexerMain {
 
 		// Agregar listener para procesar entradas nuevas en datalakeMap
 		datalakeMap.addEntryListener(new CustomEntryListener<String, String>(indexer), true);
-
-
 
 
 	}

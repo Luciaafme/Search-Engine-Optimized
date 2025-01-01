@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class MetadataExtractor implements MetadataExtractorManager {
 
 	@Override
-	public Metadata getMetadata(String inputString, String bookID)  {
+	public Metadata getMetadata(String inputString, String bookID) {
 
 		// Patterns to match metadata fields
 		Pattern titlePattern = Pattern.compile("(?i)^Title:?\\s*(.+)$", Pattern.MULTILINE);
