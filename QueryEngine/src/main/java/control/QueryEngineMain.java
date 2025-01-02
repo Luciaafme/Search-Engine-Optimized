@@ -5,17 +5,12 @@ import com.hazelcast.core.IMap;
 import model.Metadata;
 import model.WordOccurrence;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import static spark.Spark.port;
 
 public class QueryEngineMain {
 	public static void main(String[] args) {
-
-		//port(8080);
-		//enableCORS("*", "GET,POST,OPTIONS", "Content-Type,Authorization");
-
 
 		// Hazelcast setup
 		HazelcastClientManager client = new HazelcastClientManager();
@@ -27,33 +22,13 @@ public class QueryEngineMain {
 
 		QueryEngine queryEngine = new QueryEngine(datalakeMap, metadataDatamartMap, wordDatamartMap);
 
-		//configureRoutes(queryEngine);
+		String baseUrl = "http://localhost:8080";
 
-		// test del query
-		String query = "two";
-		Map<String, Object> results = queryEngine.executeQuery(query, null, null, null);
+		ApiServer2 api = new ApiServer2(queryEngine, baseUrl);
+		port(8080);
+		api.enableCORS("*", "GET,POST,OPTIONS", "Content-Type,Authorization");
+		api.configureRoutes();
 
-		// print line where the wrod appear
-		List<String> linesList = Optional.ofNullable(results)
-				.map(m -> (Map<String, Object>) m.get("response"))
-				.map(m -> (Map<String, Object>) m.get("10088"))
-				.map(m -> (List<String>) m.get("lines"))
-				.orElse(Collections.emptyList());
-
-
-		// check results
-		List<String> stop = List.of(query.split(" "));
-		for(int i=0; i<stop.size(); i++){
-			System.out.println(stop.get(i) + " -> " + linesList.get(i));
-		}
-
-
-		Optional<Metadata> metadata1 = Optional.ofNullable(results)
-				.map(m -> (Map<String, Object>) m.get("response"))
-				.map(m -> (Map<String, Object>) m.get("10088"))
-				.map(m -> (Metadata) m.get("metadata"));
-
-		System.out.println(metadata1);
-
+		api.execute();
 	}
 }
