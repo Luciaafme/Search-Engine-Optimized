@@ -30,7 +30,7 @@ public class QueryEngineMain {
 		//configureRoutes(queryEngine);
 
 		// test del query
-		String query = "two famous floods help music";
+		String query = "two";
 		Map<String, Object> results = queryEngine.executeQuery(query, null, null, null);
 
 		// print line where the wrod appear
@@ -46,6 +46,14 @@ public class QueryEngineMain {
 		for(int i=0; i<stop.size(); i++){
 			System.out.println(stop.get(i) + " -> " + linesList.get(i));
 		}
+
+
+		Optional<Metadata> metadata1 = Optional.ofNullable(results)
+				.map(m -> (Map<String, Object>) m.get("response"))
+				.map(m -> (Map<String, Object>) m.get("10088"))
+				.map(m -> (Metadata) m.get("metadata"));
+
+		System.out.println(metadata1);
 
 	}
 }
