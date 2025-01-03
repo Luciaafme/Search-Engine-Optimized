@@ -1,0 +1,9 @@
+FROM openjdk:11-jre-slim
+WORKDIR /app
+
+# Copy the Hazelcast client configuration
+COPY src/main/resources/crawler_client_hazelcast.xml.xml /app/hazelcast.xml
+COPY app.jar /app/
+
+# Start the client
+ENTRYPOINT ["java", "-jar", "app.jar", "--config", "/app/hazelcast.xml"]

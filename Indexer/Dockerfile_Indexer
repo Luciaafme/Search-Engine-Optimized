@@ -1,0 +1,12 @@
+FROM openjdk:11-jre-slim
+WORKDIR /app
+
+# Copy the Hazelcast server configuration
+COPY src/main/resources/indexer_server_hazelcast.xml /app/hazelcast.xml
+COPY app.jar /app/
+
+# Expose Hazelcast port
+EXPOSE 5701
+
+# Start the server
+ENTRYPOINT ["java", "-jar", "app.jar", "--config", "/app/hazelcast.xml"]
