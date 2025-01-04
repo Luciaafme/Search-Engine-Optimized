@@ -1,0 +1,11 @@
+cd Indexer
+mvn clean package
+docker build -t hazelcast-server .
+docker network create hazelcast-network
+docker run --name indexer --network hazelcast-network -p 5701:5701 my-hazelcast/indexer:latest
+
+** En otra terminal
+cd Crawler
+mvn clean package
+docker build -t hazelcast-client .
+docker run --rm --name hazelcast-client --network hazelcast-network  -v "C:\Users\lucia\OneDrive\Escritorio\datalake:/app/mounted-folder" hazelcast-client java -jar /app/app.jar /app/mounted-folder

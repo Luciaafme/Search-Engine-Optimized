@@ -16,7 +16,7 @@
                 <member>hazelcast-server</member>
             </tcp-ip>
         </join>
-        <interfaces enabled="true">
+        <interfaces enabled="false">
             <interface>0.0.0.0</interface>
         </interfaces>
     </network>
