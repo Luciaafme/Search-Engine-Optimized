@@ -5,7 +5,10 @@ import com.hazelcast.core.IMap;
 import model.Metadata;
 import model.WordOccurrence;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static spark.Spark.port;
 
@@ -29,6 +32,28 @@ public class QueryEngineMain {
 		api.enableCORS("*", "GET,POST,OPTIONS", "Content-Type,Authorization");
 		api.configureRoutes();
 
+
 		api.execute();
+
+
+		/*
+		String query = "printing";
+		Map<String,Object> results = queryEngine.executeQuery(query,null,null,null);
+		System.out.println("Ejecución con éxito");
+
+		List<String> linesList = Optional.ofNullable(results)
+				.map(m -> (Map<String, Object>) m.get("response"))
+				.map(m -> (Map<String, Object>) m.get("50350"))
+				.map(m -> (List<String>) m.get("lines"))
+				.orElse(Collections.emptyList());
+		// check results
+		List<String> stop = List.of(query.split(" "));
+		for(int i=0; i<stop.size(); i++){
+			System.out.println(stop.get(i) + " -> " + linesList.get(i));
+		}
+
+
+		 */
+
 	}
 }
