@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  hazelcast-server:
+    build:
+      context: ./Indexer
+    container_name: hazelcast-server
+    networks:
+      - hazelcast-network
+    ports:
+      - "5701:5701" # Exponer el puerto del servidor Hazelcast
+    environment:
+      - HAZELCAST_CONFIG=/app/resources/indexer_server_hazelcast.xml
+    volumes:
+      - ./Indexer/resources:/app/resources # Montar recursos del servidor
+
+  hazelcast-client:
+    build:
+      context: ./Crawler
+    container_name: hazelcast-client
+    networks:
+      - hazelcast-network
+    volumes:
+      - "C:/Users/lucia/OneDrive/Escritorio/datalake:/app/mounted-folder" # Montar datalake
+      - ./Crawler/resources:/app/resources # Montar recursos del cliente
+    command: java -jar /app/app.jar /app/mounted-folder
+    depends_on:
+      - hazelcast-server # Asegurarse de que el servidor esté levantado antes
+
+  query-engine:
+    build:
+      context: ./QueryEngine
+    container_name: query-engine
+    networks:
+      - hazelcast-network
+    ports:
+      - "8080:8080" # Exponer el puerto del Query Engine para solicitudes externas
+    environment:
+      - HAZELCAST_CONFIG=/app/resources/qurey_engine_hazelcast.xml
+    volumes:
+      - ./QueryEngine/resources:/app/resources # Montar configuración específica del Query Engine
+    command: java -jar /app/app.jar
+    depends_on:
+      - hazelcast-server # Query Engine necesita al servidor Hazelcast para inicializarse correctamente
+
+  nginx-dispatcher:
+    build:
+      context: ./nginx
+    container_name: nginx-dispatcher
+    networks:
+      - hazelcast-network
+    ports:
+      - "80:80" # Exponer NGINX en el puerto 80
+    depends_on:
+      - query-engine # NGINX depende del Query Engine
+
+networks:
+  hazelcast-network:
+    driver: bridge

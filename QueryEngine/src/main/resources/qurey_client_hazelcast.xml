@@ -10,7 +10,7 @@
 
     <network>
         <cluster-members>
-            <address>127.0.0.1:5701</address>
+            <address>hazelcast-server:5701</address>
         </cluster-members>
     </network>
 </hazelcast-client>

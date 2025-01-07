@@ -13,7 +13,7 @@
         <join>
             <multicast enabled="false"/>
             <tcp-ip enabled="true">
-                <member>192.168.11.173</member>
+                <member>192.168.11.173:5701</member>
             </tcp-ip>
         </join>
         <interfaces enabled="false">

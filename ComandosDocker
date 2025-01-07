@@ -1,7 +1,7 @@
 cd Indexer
 mvn clean package
 docker build -t hazelcast-server .
-docker run --network="host" --name hazelcast-server hazelcast-server
+docker run --network="host" --name hazelcast-server  -p 5701:5701 hazelcast-server
 
 ** En otra terminal
 cd Crawler
@@ -14,3 +14,19 @@ cd QueryEngine
 mvn clean package
 docker build -t hazelcast-client-1 .
 docker run --network="host" --name hazelcast-client-1 -p 8080:8080 hazelcast-client-1
+
+
+docker run --name nginx-dispatcher -p 80:80  -v //c/Users/lucia/IdeaProjects/Search-Engine-Optimized2/QueryEngine/src/main/resources/dispatcher.conf:/etc/nginx/nginx.conf nginx
+
+docker run --name nginx-dispatcher -p 80:80 -v C:\Users\lucia\IdeaProjects\Search-Engine-Optimized2\QueryEngine\src\main\resources\dispatcher.conf:/etc/nginx/nginx.conf nginx
+docker run -d --name nginx -p 80:80 -v nginx.conf:/etc/nginx/nginx.conf:ro --link query-engine nginx:latest
+
+
+
+
+
+docker run -d --name nginx-dispatcher --network hazelcast-network -p 80:80 nginx-dispatcher
+
+
+
+docker swarm init --advertise-addr  192.168.11.173
