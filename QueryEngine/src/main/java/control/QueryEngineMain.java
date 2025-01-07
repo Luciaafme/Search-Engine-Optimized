@@ -27,7 +27,7 @@ public class QueryEngineMain {
 
 		String baseUrl = "http://localhost:8080";
 
-		ApiServer2 api = new ApiServer2(queryEngine, baseUrl);
+		ApiServer2 api = new ApiServer2(queryEngine, baseUrl,args[0],args[1]);
 		port(8080);
 		api.enableCORS("*", "GET,POST,OPTIONS", "Content-Type,Authorization");
 		api.configureRoutes();

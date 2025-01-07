@@ -17,8 +17,8 @@ public class ApiServer2 {
 	private static final Gson gson = new Gson();
 
 	// hay que poner la ruta completa donde se encuentra el archivo words, sino no lee su contenido
-	private static final List<String> words = loadContent("C:\\Users\\alvar\\Desktop\\Universidad\\03 - AÑO3\\Semestre-1\\04-BD\\01-Teoria\\01-Assignments\\02-Individual Assignment\\04 - Stage4\\Search-Engine-Optimized\\QueryEngine\\src\\main\\resources\\words.txt");
-	private static final List<String> queries = loadContent("C:\\Users\\alvar\\Desktop\\Universidad\\03 - AÑO3\\Semestre-1\\04-BD\\01-Teoria\\01-Assignments\\02-Individual Assignment\\04 - Stage4\\Search-Engine-Optimized\\QueryEngine\\src\\main\\resources\\queries.txt");
+	private static List<String> words;
+	private static List<String> queries;
 	private static final Random random = new Random();
 	private static int threads = 1;
 	private static int threadCount = 0;
@@ -28,9 +28,11 @@ public class ApiServer2 {
 	private QueryEngine queryEngine;
 	private static String baseUrl;
 
-	public ApiServer2(QueryEngine queryEngine, String baseUrl) {
+	public ApiServer2(QueryEngine queryEngine, String baseUrl, String wordsTestPath, String queriesTestPath) {
 		this.queryEngine = queryEngine;
 		this.baseUrl = baseUrl;
+		this.words = loadContent(wordsTestPath);
+		this.queries = loadContent(queriesTestPath);
 	}
 
 	public void configureRoutes() {
@@ -217,11 +219,11 @@ public class ApiServer2 {
 
 				System.out.println("------- REPORT -------\n" + report);
 
-				saveReportToFile(report);
+				//saveReportToFile(report);
 			}
 
 			private static void saveReportToFile(String report) {
-				String filePath = "C:\\Users\\alvar\\Desktop\\Universidad\\03 - AÑO3\\Semestre-1\\04-BD\\01-Teoria\\01-Assignments\\02-Individual Assignment\\04 - Stage4\\Search-Engine-Optimized\\QueryEngine\\src\\main\\resources\\historialQueries.txt"; // Ruta del archivo donde se guardará el historial
+				String filePath = "C:\\Users\\lucia\\IdeaProjects\\Search-Engine-Optimized2\\results.txt"; // Ruta del archivo donde se guardará el historial
 				//String filePath = "C:\\Users\\alvar\\Desktop\\Universidad\\03 - AÑO3\\Semestre-1\\04-BD\\01-Teoria\\01-Assignments\\02-Individual Assignment\\04 - Stage4\\Search-Engine-Optimized\\QueryEngine\\src\\main\\resources\\historialWords.txt"; // Ruta del archivo donde se guardará el historial
 
 				try {
@@ -265,9 +267,9 @@ public class ApiServer2 {
 	private static void doQuery() {
 		try {
 			long start = System.currentTimeMillis();
-			//Jsoup.connect(baseUrl + "/test?phrase=" + words()).ignoreContentType(true).get(); // To test with only words
-			List<String> query = queries();
-			Jsoup.connect(baseUrl + "/test?phrase=" + query.get(0) + "?author=" + query.get(1) + "?yearStart=" + query.get(2) + "?yearEnd=" + query.get(3)).ignoreContentType(true).get(); // To test with queries with metadata
+			Jsoup.connect(baseUrl + "/test?phrase=" + words()).ignoreContentType(true).get(); // To test with only words
+			//List<String> query = queries();
+			//Jsoup.connect(baseUrl + "/test?phrase=" + query.get(0) + "?author=" + query.get(1) + "?yearStart=" + query.get(2) + "?yearEnd=" + query.get(3)).ignoreContentType(true).get(); // To test with queries with metadata
 
 			long stop = System.currentTimeMillis();
 			synchronized (latencies) {

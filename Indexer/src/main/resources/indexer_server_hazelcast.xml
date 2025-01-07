@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <hazelcast xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xmlns="http://www.hazelcast.com/schema/config"
            xsi:schemaLocation="http://www.hazelcast.com/schema/config
@@ -9,26 +8,22 @@
     </group>
 
     <network>
-        <port auto-increment="false">5701</port> <!-- Puerto fijo -->
+        <port auto-increment="true">5701</port>
         <join>
-            <multicast enabled="false"/>
+            <multicast enabled="false"/> <!-- Desactivar multicast -->
             <tcp-ip enabled="true">
-                <member>hazelcast-server</member>
+                <member>hazelcast-server-1:5701</member>
+                <member>hazelcast-server-2:5701</member>
+                <member>hazelcast-server-3:5701</member>
+                <member>hazelcast-server-4:5701</member>
+                <member>hazelcast-server-5:5701</member>
+                <member>hazelcast-server-6:5701</member>
+                <member>hazelcast-server-7:5701</member>
+                <member>hazelcast-server-8:5701</member>
+                <member>hazelcast-server-9:5701</member>
+                <member>hazelcast-server-10:5701</member>
+                <!-- Agregar más nodos aquí -->
             </tcp-ip>
         </join>
-        <interfaces enabled="false">
-        </interfaces>
     </network>
-
-    <map name="metadataMap">
-        <backup-count>1</backup-count>
-    </map>
-
-    <map name="wordDatamartMap">
-        <backup-count>1</backup-count>
-    </map>
-
-    <map name="datalakeMap">
-        <backup-count>1</backup-count>
-    </map>
 </hazelcast>
