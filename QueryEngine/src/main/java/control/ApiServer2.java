@@ -22,7 +22,7 @@ public class ApiServer2 {
 	private static int exceptions;
 	private QueryEngine queryEngine;
 
-	public ApiServer2(QueryEngine queryEngine, String baseUrl) {
+	public ApiServer2(QueryEngine queryEngine) {
 		this.queryEngine = queryEngine;
 	}
 
