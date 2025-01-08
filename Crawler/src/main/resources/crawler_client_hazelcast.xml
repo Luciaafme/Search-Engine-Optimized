@@ -10,7 +10,7 @@
 
     <network>
         <cluster-members>
-            <address>hazelcast-server:5701</address>
+            <address>hazelcast-server-1:5040</address>
         </cluster-members>
     </network>
 </hazelcast-client>

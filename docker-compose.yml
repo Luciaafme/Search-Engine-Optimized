@@ -6,7 +6,7 @@ services:
     networks:
       - hazelcast-network
     ports:
-      - "5701:5701" # Exponer el puerto del servidor Hazelcast
+      - "5040:5040" # Exponer el puerto del servidor Hazelcast
     environment:
       - NODE_ID=${NODE_ID}  # Identificador único para el nodo
       - HAZELCAST_CONFIG=/app/resources/indexer_server_hazelcast.xml
@@ -20,7 +20,7 @@ services:
     networks:
       - hazelcast-network
     volumes:
-      - "C:/Users/lucia/OneDrive/Escritorio/datalake:/app/mounted-folder" # Montar datalake
+      - "C:/pub/tmp/datalake:/app/mounted-folder" # Montar datalake
       - ./Crawler/resources:/app/resources # Montar recursos del cliente
     command: java -jar /app/app.jar /app/mounted-folder
     depends_on:

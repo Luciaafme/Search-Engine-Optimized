@@ -10,7 +10,7 @@ COPY target/Indexer-1.0-SNAPSHOT.jar /app/app.jar
 COPY src/main/resources/indexer_server_hazelcast.xml /app/resources/indexer_server_hazelcast.xml
 
 # Exponer el puerto para Hazelcast
-EXPOSE 5701
+EXPOSE 5040
 
 # Ejecutar el servidor Hazelcast
 CMD ["java", "-jar", "/app/app.jar"]

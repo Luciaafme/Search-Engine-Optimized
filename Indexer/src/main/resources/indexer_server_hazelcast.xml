@@ -8,20 +8,12 @@
     </group>
 
     <network>
-        <port auto-increment="true">5701</port>
+        <port auto-increment="true">5040</port>
         <join>
             <multicast enabled="false"/> <!-- Desactivar multicast -->
             <tcp-ip enabled="true">
-                <member>hazelcast-server-1:5701</member>
-                <member>hazelcast-server-2:5701</member>
-                <member>hazelcast-server-3:5701</member>
-                <member>hazelcast-server-4:5701</member>
-                <member>hazelcast-server-5:5701</member>
-                <member>hazelcast-server-6:5701</member>
-                <member>hazelcast-server-7:5701</member>
-                <member>hazelcast-server-8:5701</member>
-                <member>hazelcast-server-9:5701</member>
-                <member>hazelcast-server-10:5701</member>
+                <member>hazelcast-server-1:5040</member>
+                <member>hazelcast-server-2:5040</member>
                 <!-- Agregar más nodos aquí -->
             </tcp-ip>
         </join>
