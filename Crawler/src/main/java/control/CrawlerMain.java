@@ -21,7 +21,7 @@ public class CrawlerMain {
 		System.out.println(args[0]);
 		String datalakeFolderPath = args[0];
 
-		int numBooks = 0;
+		int numBooks = 5;
 		Filter filter = new LanguageFilter();
 		Downloader downloader = new BookDownloader(filter);
 		WebCrawlerController controller = new WebCrawlerController(downloader, datalakeMap, datalakeFolderPath, numBooks);

@@ -14,6 +14,8 @@
             <tcp-ip enabled="true">
                 <member>hazelcast-server-1:5040</member>
                 <member>hazelcast-server-2:5040</member>
+                <member>hazelcast-server-3:5040</member>
+                <member>hazelcast-server-4:5040</member>
                 <!-- Agregar más nodos aquí -->
             </tcp-ip>
         </join>
