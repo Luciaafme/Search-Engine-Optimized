@@ -12,27 +12,25 @@ import control.word.WordStoreMap;
 import model.Metadata;
 import model.WordOccurrence;
 
-import java.io.IOException;
 import java.util.List;
 
 public class IndexerMain {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 
-		HazelcastServer server = new HazelcastServer();
-		HazelcastInstance hazelcastInstance = server.getHazelcastInstance();
+		HazelcastClientManager client = new HazelcastClientManager();
+		HazelcastInstance clientInstance = client.getHazelcastInstance();
 
-		IMap<String, Metadata> metadataMap = hazelcastInstance.getMap("metadataMap");
-		IMap<String, List<WordOccurrence>> wordMap = hazelcastInstance.getMap("wordDatamartMap");
-		IMap<String, String> datalakeMap = hazelcastInstance.getMap("datalakeMap");
+		IMap<String, String> datalakeMap = clientInstance.getMap("datalakeMap");
+		IMap<String, Metadata> metadataDatamartMap = clientInstance.getMap("metadataDatamartMap");
+		IMap<String, List<WordOccurrence>> wordDatamartMap = clientInstance.getMap("wordDatamartMap");
 
-		//server.shutdown();
 
 		// Componentes
 		WordCleanerManager wordCleaner = new WordCleaner();
 		MetadataExtractorManager metadataExtractor = new MetadataExtractor();
-		MetadataStoreManager metadataStoreMap = new MetadataStoreMap(metadataMap);
+		MetadataStoreManager metadataStoreMap = new MetadataStoreMap(metadataDatamartMap);
 		WordExtractorManager wordExtractor = new WordExtractor(wordCleaner);
-		WordStoreManager wordStoreMap = new WordStoreMap(wordMap);
+		WordStoreManager wordStoreMap = new WordStoreMap(wordDatamartMap);
 		Indexer indexer = new Indexer(wordStoreMap, metadataStoreMap, metadataExtractor, wordExtractor);
 
 		// Agregar listener para procesar entradas nuevas en datalakeMap

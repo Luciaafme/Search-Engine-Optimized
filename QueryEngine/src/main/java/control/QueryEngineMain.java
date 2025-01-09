@@ -5,31 +5,28 @@ import com.hazelcast.core.IMap;
 import model.Metadata;
 import model.WordOccurrence;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import static spark.Spark.port;
 
 public class QueryEngineMain {
 	public static void main(String[] args) {
 
-		// Hazelcast setup
-		HazelcastClientManager client = new HazelcastClientManager();
-		HazelcastInstance clientInstance = client.getHazelcastInstance();
+		HazelcastServer server = new HazelcastServer();
+		HazelcastInstance hazelcastInstance = server.getHazelcastInstance();
 
-		IMap<String, String> datalakeMap = clientInstance.getMap("datalakeMap");
-		IMap<String, Metadata> metadataDatamartMap = clientInstance.getMap("metadataMap");
-		IMap<String, List<WordOccurrence>> wordDatamartMap = clientInstance.getMap("wordDatamartMap");
+		IMap<String, Metadata> metadataDatamartMap = hazelcastInstance.getMap("metadataDatamartMap");
+		IMap<String, List<WordOccurrence>> wordDatamartMap = hazelcastInstance.getMap("wordDatamartMap");
+		IMap<String, String> datalakeMap = hazelcastInstance.getMap("datalakeMap");
+
 
 		QueryEngine queryEngine = new QueryEngine(datalakeMap, metadataDatamartMap, wordDatamartMap);
 
 		String baseUrl = "http://localhost:8080";
 
-		ApiServer2 api = new ApiServer2(queryEngine, baseUrl,args[0],args[1]);
+		ApiServer2 api = new ApiServer2(queryEngine, baseUrl, args[0], args[1]);
 		port(8080);
-		api.enableCORS("*", "GET,POST,OPTIONS", "Content-Type,Authorization");
+		ApiServer2.enableCORS("*", "GET,POST,OPTIONS", "Content-Type,Authorization");
 		api.configureRoutes();
 
 

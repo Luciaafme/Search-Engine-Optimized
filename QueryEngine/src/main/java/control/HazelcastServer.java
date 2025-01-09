@@ -14,9 +14,9 @@ public class HazelcastServer {
 	public HazelcastServer() {
 		try {
 			// Load server configuration
-			InputStream configStream = getClass().getClassLoader().getResourceAsStream("indexer_server_hazelcast.xml");
+			InputStream configStream = getClass().getClassLoader().getResourceAsStream("query_server_hazelcast.xml");
 			if (configStream == null) {
-				throw new FileNotFoundException("hazelcast.xml not found in classpath");
+				throw new FileNotFoundException("query_server_hazelcast.xml not found in classpath");
 			}
 
 			Config config = new XmlConfigBuilder(configStream).build();
