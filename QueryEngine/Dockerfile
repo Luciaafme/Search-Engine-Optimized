@@ -8,4 +8,4 @@ COPY src/main/resources/query_server_hazelcast.xml /app/query_server_hazelcast.x
 
 EXPOSE 5801
 
-CMD ["java", "-Dhazelcast.client.config=/app/query_client_hazelcast.xml", "-jar", "/app/app.jar"]
+CMD ["java", "-Dhazelcast.config=/app/query_client_hazelcast.xml", "-jar", "/app/app.jar"]

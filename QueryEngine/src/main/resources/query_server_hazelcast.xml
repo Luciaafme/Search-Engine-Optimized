@@ -8,26 +8,14 @@
     </group>
 
     <network>
-        <!-- Configuración del puerto -->
-        <port auto-increment="true" port-count="100">5801</port>
-
-        <!-- Configuración de interfaces -->
-        <interfaces enabled="true">
-            <interface>10.26.14.*</interface>
-            <interface>172.17.0.*</interface>
-        </interfaces>
-
-        <!-- Configuración de descubrimiento de nodos -->
+        <public-address>10.26.14.207:5801</public-address>
         <join>
             <tcp-ip enabled="true">
-                <member>10.26.14.207</member>
-                <member>10.26.14.203</member>
+                <member>10.26.14.203:5801</member>
+                <member>10.26.14.207:5801</member>
             </tcp-ip>
             <multicast enabled="false"/>
         </join>
-
-        <!-- Configuración de la red -->
-        <!-- <public-address>10.26.14.207:5801</public-address> -->
     </network>
 
     <!-- Configuración de mapas -->
