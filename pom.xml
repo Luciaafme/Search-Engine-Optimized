@@ -12,7 +12,6 @@
         <module>Crawler</module>
         <module>Indexer</module>
         <module>QueryEngine</module>
-        <module>nginx</module>
         <module>NGINX</module>
     </modules>
 

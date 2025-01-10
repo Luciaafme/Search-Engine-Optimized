@@ -1,4 +1,7 @@
-<hazelcast>
+<hazelcast  xmlns="http://www.hazelcast.com/schema/config"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.hazelcast.com/schema/config
+           https://hazelcast.com/schema/config/hazelcast-config-3.12.13.xsd">
     <group>
         <name>BookCluster</name>
         <password>password123</password>
@@ -6,15 +9,11 @@
 
     <network>
 
-        <port auto-increment="true" port-count="100">5701</port>
+        <port auto-increment="true" port-count="100">5801</port>
         <join>
 
             <tcp-ip enabled="true">
-                <member>192.168.1.2</member>
-                <member>192.168.1.3</member>
-                <member>192.168.1.4</member>
-                <member>192.168.1.5</member>
-                <member>192.168.1.6</member>
+                <member>10.26.40.13</member>
             </tcp-ip>
             <multicast enabled="false"/>
         </join>
@@ -35,12 +34,4 @@
         <backup-count>1</backup-count>
         <time-to-live-seconds>0</time-to-live-seconds>
     </map>
-
-    <rest-api enabled="true">
-        <endpoint-groups>
-            <endpoint-group name="HEALTH_CHECK" enabled="true">
-                <endpoint name="HEALTH_CHECK"/>
-            </endpoint-group>
-        </endpoint-groups>
-    </rest-api>
 </hazelcast>

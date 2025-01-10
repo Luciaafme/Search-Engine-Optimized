@@ -1,15 +1,20 @@
-<hazelcast-client>
-    <cluster-name>BookCluster</cluster-name>
+<hazelcast-client xmlns="http://www.hazelcast.com/schema/client-config"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://www.hazelcast.com/schema/client-config
+                  https://hazelcast.com/schema/client-config/hazelcast-client-config-3.12.xsd">
+
+    <group>
+        <name>BookCluster</name>
+    </group>
 
     <network>
         <cluster-members>
-            <address>127.0.0.1:8080</address>
+            <address>127.0.0.1:5801</address>
         </cluster-members>
     </network>
 
-    <!-- Configuración adicional -->
     <properties>
-        <property name="hazelcast.client.smart.routing">true</property> <!-- Smart client -->
-        <property name="hazelcast.client.connection.timeout">5000</property> <!-- Tiempo de espera -->
+        <property name="hazelcast.client.smart.routing">true</property>
+        <property name="hazelcast.client.connection.timeout">5000</property>
     </properties>
 </hazelcast-client>
