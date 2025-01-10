@@ -38,5 +38,5 @@ docker swarm init --advertise-addr  192.168.11.173
 
 docker network create --subnet=10.26.14.0/24 hazelcast-network
 
-docker run --name queryengine --net hazelcast-network --ip 10.26.14.207 -p 5801:5801 queryengine
+docker run --name queryengine --net hazelcast-network --ip 10.26.14.203 -p 5801:5801 queryengine
 
