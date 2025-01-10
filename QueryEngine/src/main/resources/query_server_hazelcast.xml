@@ -1,7 +1,7 @@
 <hazelcast xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://www.hazelcast.com/schema/config
-           https://hazelcast.com/schema/config/hazelcast-config-3.12.13.xsd">
+           http://www.hazelcast.com/schema/config/hazelcast-config-3.12.13.xsd">
     <group>
         <name>BookCluster</name>
         <password>password123</password>
@@ -13,14 +13,13 @@
 
         <!-- Configuración de interfaces -->
         <interfaces enabled="true">
-            <interface>10.26.14.*</interface> <!-- Asegúrate de permitir la subred relevante -->
-            <interface>172.17.0.*</interface> <!-- Red interna de Docker -->
+            <interface>10.26.14.*</interface>
+            <interface>172.17.0.*</interface>
         </interfaces>
 
         <!-- Configuración de descubrimiento de nodos -->
         <join>
             <tcp-ip enabled="true">
-                <!-- Lista de miembros en el clúster -->
                 <member>10.26.14.207</member>
                 <member>10.26.14.203</member>
                 <member>10.26.14.208</member>
@@ -29,7 +28,7 @@
         </join>
 
         <!-- Configuración de la red -->
-        <public-address>10.26.14.207:5801</public-address> <!-- Dirección pública específica del nodo -->
+        <!-- <public-address>10.26.14.207:5801</public-address> -->
     </network>
 
     <!-- Configuración de mapas -->
