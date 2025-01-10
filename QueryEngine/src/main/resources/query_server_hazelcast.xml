@@ -4,19 +4,19 @@
            https://hazelcast.com/schema/config/hazelcast-config-3.12.13.xsd">
     <group>
         <name>BookCluster</name>
-        <password>password123</password>
     </group>
 
     <network>
 
         <port auto-increment="true" port-count="100">5801</port>
         <interfaces>
-            <interface>10.26.40.13</interface>
+            <interface>10.26.14.203</interface>
         </interfaces>
         <join>
 
             <tcp-ip enabled="true">
-                <member>10.26.40.13</member>
+                <member>10.26.14.207</member>
+                <member>10.26.14.203</member>
             </tcp-ip>
             <multicast enabled="false"/>
         </join>

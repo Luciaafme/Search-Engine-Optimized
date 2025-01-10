@@ -1,3 +1,7 @@
+docker run --name queryengine -v "C:\Users\Examen\Desktop\words.txt:/app/words.txt" -v "C:\Users\Examen\Desktop\queries.txt:/app/queries.t
+xt"-p 5801:8080 queryengine java -jar /app/app.jar /app/words.txt /app/queries.txt
+
+
 cd Indexer
 mvn clean package
 docker build -t hazelcast-server .
