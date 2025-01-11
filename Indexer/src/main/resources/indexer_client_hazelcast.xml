@@ -9,7 +9,7 @@
 
     <network>
         <cluster-members>
-            <address>0.0.0.0:5802</address>
+            <address>IP:5701</address>
         </cluster-members>
     </network>
 
