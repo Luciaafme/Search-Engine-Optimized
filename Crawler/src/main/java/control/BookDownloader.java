@@ -30,13 +30,12 @@ public class BookDownloader implements Downloader {
 			int responseCode = connection.getResponseCode();
 			if (responseCode == 200) {
 				String content = new String(url.openStream().readAllBytes(), StandardCharsets.UTF_8);
-				System.out.println("Contenido: " + content);
+				System.out.println("Contend: " + content);
 				if (languageFilter.applyFilter(content)) {
 					System.out.println("Error. Book " + bookId + " not in English, Spanish, or French.");
 					return false;
 				}
 
-				// Subir contenido a Hazelcast
 				booksMap.put(String.valueOf(bookId), content);
 				System.out.println("Book " + bookId + " uploaded to Hazelcast.");
 

@@ -17,19 +17,16 @@ public class WordStoreMap implements WordStoreManager {
 
 	@Override
 	public void update(String bookID, Map<String, List<Integer>> newWordsMap) {
-		System.out.println("Inicia update...");
+		System.out.println("Update");
 
 		for (Map.Entry<String, List<Integer>> entry : newWordsMap.entrySet()) {
 			String word = entry.getKey();
 			List<Integer> lineNumberList = entry.getValue();
 
-			// Create new occurrence
 			WordOccurrence newOccurrence = new WordOccurrence(bookID, lineNumberList);
 
-			// Get existing occurrences or create new list
 			List<WordOccurrence> existingOccurrences = wordDatamartMap.getOrDefault(word, new ArrayList<>());
 
-			// Check if we already have an occurrence for this book
 			boolean exists = existingOccurrences.stream()
 					.anyMatch(occurrence -> occurrence.getBookID().equals(bookID));
 

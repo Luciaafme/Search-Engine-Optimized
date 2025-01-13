@@ -19,7 +19,6 @@
 
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -30,7 +29,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Maven Shade Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>

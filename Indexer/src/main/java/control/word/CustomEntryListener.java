@@ -14,25 +14,25 @@ public class CustomEntryListener<S, S1> implements EntryListener<String, String>
 
 	@Override
 	public void entryAdded(EntryEvent<String, String> event) {
-		System.out.println("listener activado");
-		System.out.println("Libro: " + event.getKey());
-		System.out.println("Contenido: " + event.getValue().substring(0, Math.min(event.getValue().length(), 100)) + "...");
+		System.out.println("listener activated");
+		System.out.println("Book: " + event.getKey());
+		System.out.println("Contend: " + event.getValue().substring(0, Math.min(event.getValue().length(), 100)) + "...");
 		indexer.execute(event.getKey(), event.getValue());
 	}
 
 	@Override
 	public void entryRemoved(EntryEvent<String, String> event) {
-		System.out.println("Elemento eliminado: " + event.getKey());
+		System.out.println("Element deleted: " + event.getKey());
 	}
 
 	@Override
 	public void entryUpdated(EntryEvent<String, String> event) {
-		System.out.println("Elemento actualizado: " + event.getKey() + " = " + event.getValue());
+		System.out.println("Element updated: " + event.getKey() + " = " + event.getValue());
 	}
 
 	@Override
 	public void entryEvicted(EntryEvent<String, String> event) {
-		System.out.println("Elemento desalojado: " + event.getKey());
+		System.out.println("evicted element: " + event.getKey());
 	}
 
 	@Override

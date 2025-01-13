@@ -23,21 +23,19 @@ public class QueryEngine {
 	}
 
 	public Map<String, Object> executeQuery(String words, String author, String startYear, String endYear) {
-		// 1º mapa: solo tiene una clave -> response
 		Map<String, Object> response = new HashMap<>();
 
 		List<String> wordList = List.of(words.split(" "));
 		Set<String> matchingBookIds = calculateIntersection(wordList);
 		List<Metadata> matchMetadata = filterMetadata(matchingBookIds, author, startYear, endYear);
 
-		// 2º mapa -> claves: bookID donde aparecen todas las palabras de la query -> valores: otro mapa interno
 		Map<String, Object> results = new HashMap<>();
 
 		for (Metadata metadata : matchMetadata) {
 			Map<String, Object> auxiliar = getPreviewLines(metadata, wordList);
 			results.put(metadata.getBookID(), auxiliar);
 		}
-		response.put("response", results);
+		response.put(words, results);
 		return response;
 	}
 
@@ -47,13 +45,11 @@ public class QueryEngine {
 			return new HashSet<>();
 		}
 
-		// Get the book IDs for the first word
 		Set<String> intersection = wordDatamartMap.getOrDefault(wordsList.get(0), new ArrayList<>())
 				.stream()
 				.map(WordOccurrence::getBookID)
 				.collect(Collectors.toSet());
 
-		// Intersect with book IDs of remaining words
 		for (String word : wordsList.subList(1, wordsList.size())) {
 			Set<String> wordBookIds = wordDatamartMap.getOrDefault(word, new ArrayList<>())
 					.stream()

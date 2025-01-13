@@ -19,7 +19,6 @@ public class WebCrawlerController implements CrawlerController {
 	private final Path datalakePath;
 	private final Integer numBooks;
 
-	// Constructor corregido: Recibe HazelcastManager como parámetro
 	public WebCrawlerController(Downloader downloader, IMap<String, String> datalakeMap, String datalakePath, Integer numBooks) {
 		this.downloader = downloader;
 		this.datalakePath = Path.of(datalakePath);
@@ -48,17 +47,13 @@ public class WebCrawlerController implements CrawlerController {
 	public void uploadBookToMap(String datalakeDirectory) throws IOException {
 		Path datalakePath = Paths.get(datalakeDirectory);
 
-		// Leer los archivos del directorio
 		try (Stream<Path> files = Files.list(datalakePath)) {
 			files.forEach(file -> {
 				try {
-					// Leer contenido del archivo
 					String content = Files.readString(file, StandardCharsets.UTF_8);
 
-					// Extraer ID del libro del nombre del archivo
 					String bookId = file.getFileName().toString();
 
-					// Subir a Hazelcast
 					datalakeMap.put(bookId, content);
 
 					System.out.println("Libro " + bookId + " subido a Hazelcast.");

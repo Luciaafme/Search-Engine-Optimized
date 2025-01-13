@@ -24,8 +24,6 @@ public class IndexerMain {
 		IMap<String, Metadata> metadataDatamartMap = clientInstance.getMap("metadataDatamartMap");
 		IMap<String, List<WordOccurrence>> wordDatamartMap = clientInstance.getMap("wordDatamartMap");
 
-
-		// Componentes
 		WordCleanerManager wordCleaner = new WordCleaner();
 		MetadataExtractorManager metadataExtractor = new MetadataExtractor();
 		MetadataStoreManager metadataStoreMap = new MetadataStoreMap(metadataDatamartMap);
@@ -33,7 +31,6 @@ public class IndexerMain {
 		WordStoreManager wordStoreMap = new WordStoreMap(wordDatamartMap);
 		Indexer indexer = new Indexer(wordStoreMap, metadataStoreMap, metadataExtractor, wordExtractor);
 
-		// Agregar listener para procesar entradas nuevas en datalakeMap
 		datalakeMap.addEntryListener(new CustomEntryListener<String, String>(indexer), true);
 
 

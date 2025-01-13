@@ -36,12 +36,12 @@ public class Indexer {
 			metadataStoreManager.printAllMetadata();
 			Map<String, List<Integer>> indexedWordMap = wordExtractor.getWords(bookContent, metadata.getBookID());
 			wordStoreManager.update(bookID, indexedWordMap);
-			System.out.println("Finalizado el indexado del libro con ID: " + bookID);
+			System.out.println("Finished indexing book with id: " + bookID);
 			wordStoreManager.printMap();
 
 
 		} catch (Exception e) {
-			System.err.println("Error general procesando los libros.");
+			System.err.println("Error processing books.");
 			e.printStackTrace();
 		}
 

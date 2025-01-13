@@ -11,12 +11,9 @@ public class CrawlerMain {
 
 	public static void main(String[] args) {
 
-		// In your client modules
 		HazelcastClientManager client = new HazelcastClientManager();
 		HazelcastInstance clientInstance = client.getHazelcastInstance();
 		IMap<String, String> datalakeMap = clientInstance.getMap("datalakeMap");
-
-		//client.shutdown();
 
 		System.out.println(args[0]);
 		String datalakeFolderPath = args[0];

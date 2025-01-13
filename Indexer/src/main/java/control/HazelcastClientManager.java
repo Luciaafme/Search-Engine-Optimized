@@ -13,7 +13,6 @@ public class HazelcastClientManager {
 
 	public HazelcastClientManager() {
 		try {
-			// Load client configuration
 			InputStream configStream = getClass().getClassLoader().getResourceAsStream("indexer_client_hazelcast.xml");
 			if (configStream == null) {
 				throw new FileNotFoundException("indexer_client_hazelcast.xml not found in classpath");

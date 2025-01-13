@@ -20,9 +20,7 @@ public class WordExtractor implements WordExtractorManager {
 
 	@Override
 	public Map<String, List<Integer>> getWords(String bookContent, String bookID) {
-		/*
-		esta funcion devuelve un mapa con las palabras del libro como clave y una lista con los numeros de linea donde aparecen dichas palabras como valor
-		 */
+
 		Map<String, List<Integer>> indexedWordMap = new HashMap<>();
 
 		String regex = "(?i)\\*\\*\\* START OF THE PROJECT GUTENBERG EBOOK .*? \\*\\*\\*(.*?)\\*\\*\\* END OF THE PROJECT GUTENBERG EBOOK .*? \\*\\*\\*";
