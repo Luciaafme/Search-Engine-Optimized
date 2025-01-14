@@ -18,18 +18,18 @@ public class MetadataStoreMap implements MetadataStoreManager {
 	public void update(Metadata metadata) {
 		if (metadata != null) {
 			metadataMap.put(metadata.getBookID(), metadata);
-			System.out.println("Metadatos almacenados correctamente para el libro: " + metadata.getBookID());
+			System.out.println("Metadata stored correctly in the book: " + metadata.getBookID());
 		} else {
-			System.err.println("Metadatos nulos, no se pudieron almacenar.");
+			System.err.println("Metadata NULL, couldn't be stored.");
 		}
 	}
 
 	@Override
 	public void printAllMetadata() {
 		if (metadataMap.isEmpty()) {
-			System.out.println("El mapa de metadatos está vacío.");
+			System.out.println("Metadata map is empty");
 		} else {
-			System.out.println("Contenido del mapa de metadatos:");
+			System.out.println("Content of the Metadata map: ");
 			for (String key : metadataMap.keySet()) {
 				System.out.println(metadataMap.get(key));
 			}

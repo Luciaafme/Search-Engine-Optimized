@@ -12,7 +12,7 @@
         <module>Crawler</module>
         <module>Indexer</module>
         <module>QueryEngine</module>
-        <module>NGINX</module>
+        <module>QueryClient</module>
     </modules>
 
     <properties>

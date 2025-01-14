@@ -15,7 +15,6 @@ public class Metadata implements DataSerializable {
 	private String language;
 	private String downloadLink;
 
-	// Constructor vacío requerido por Hazelcast
 	public Metadata() {
 	}
 

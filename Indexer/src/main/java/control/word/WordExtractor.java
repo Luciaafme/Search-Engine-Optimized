@@ -24,7 +24,7 @@ public class WordExtractor implements WordExtractorManager {
 		Map<String, List<Integer>> indexedWordMap = new HashMap<>();
 
 		String regex = "(?i)\\*\\*\\* START OF THE PROJECT GUTENBERG EBOOK .*? \\*\\*\\*(.*?)\\*\\*\\* END OF THE PROJECT GUTENBERG EBOOK .*? \\*\\*\\*";
-		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL); // DOTALL permite capturar contenido en múltiples líneas
+		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
 		Matcher matcher = pattern.matcher(bookContent);
 
 		if (matcher.find()) {

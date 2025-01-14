@@ -15,7 +15,6 @@ public class WordOccurrence implements Serializable {
 		this.lineNumbers = lineNumbers;
 	}
 
-	// Getters and basic methods
 	public String getBookID() {
 		return bookID;
 	}

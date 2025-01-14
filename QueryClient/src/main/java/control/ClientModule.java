@@ -17,20 +17,18 @@ public class ClientModule {
 
     private final String loadBalancerUrl;
     private static List<String> words;
-    private static List<String> queries;
     private static final Random random = new Random();
 
-    public ClientModule(String loadBalancerUrl, String wordsPath, String queriesPath) {
+    public ClientModule(String loadBalancerUrl, String wordsPath) {
         this.loadBalancerUrl = loadBalancerUrl;
         this.words = loadContent(wordsPath);
-        this.queries = loadContent(queriesPath);
     }
 
     private static List<String> loadContent(String filePath) {
         try {
             return Files.readAllLines(Paths.get(filePath));
         } catch (IOException e) {
-            System.err.println("Error leyendo el archivo: " + e.getMessage());
+            System.err.println("Error reading the file: " + e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -83,7 +81,7 @@ public class ClientModule {
                     int clientId = i;
                     executor.submit(() -> {
                         System.out.println("Client " + clientId + " sending request...");
-                        sendGetRequest(endpoint, phrase); // Send the GET request
+                        sendGetRequest(endpoint, phrase);
                     });
                 }
 

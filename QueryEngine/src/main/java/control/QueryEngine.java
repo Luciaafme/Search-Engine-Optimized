@@ -98,7 +98,7 @@ public class QueryEngine {
 				if (bookOccurrence.isPresent()) {
 					List<Integer> lineNumbers = bookOccurrence.get().getLineNumbers();
 					if (!lineNumbers.isEmpty()) {
-						wordsLineNumberList.add(lineNumbers.get(0));  // Get first occurrence from all words in the query
+						wordsLineNumberList.add(lineNumbers.get(0));
 					}
 				}
 			}
@@ -115,7 +115,7 @@ public class QueryEngine {
 	public List<String>  getWordLines(String bookContent, List<Integer> wordLineNumberList) {
 
 		String regex = "(?i)\\*\\*\\* START OF THE PROJECT GUTENBERG EBOOK .*? \\*\\*\\*(.*?)\\*\\*\\* END OF THE PROJECT GUTENBERG EBOOK .*? \\*\\*\\*";
-		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL); // DOTALL permite capturar contenido en múltiples líneas
+		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
 		Matcher matcher = pattern.matcher(bookContent);
 
 		List<String> selectedLines = new ArrayList<>();
