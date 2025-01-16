@@ -71,16 +71,16 @@ public class ClientModule {
         return phrase.toString();
     }
 
-    public void simulateClients(int attempts, String endpoint) {
-        ExecutorService executor = Executors.newFixedThreadPool(attempts);
+    public void simulateClients(int threads, String endpoint) {
+        ExecutorService executor = Executors.newFixedThreadPool(threads);
 
         try {
             while (true) {
-                for (int i = 0; i < attempts; i++) {
+                for (int i = 0; i < threads; i++) {
                     String phrase = generatePhrase();
-                    int clientId = i;
+                    int thread_id = i;
                     executor.submit(() -> {
-                        System.out.println("Client " + clientId + " sending request...");
+                        System.out.println("Client " + thread_id + " sending request...");
                         sendGetRequest(endpoint, phrase);
                     });
                 }

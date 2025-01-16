@@ -20,9 +20,8 @@ public class ApiServer {
 
     public void configureRoutes() {
         get("/search", (req, res) -> {
-
+            long start = System.currentTimeMillis();
             try {
-
                 String phrase = req.queryParams("phrase");
                 String author = req.queryParams("author");
                 String startYear = req.queryParams("startyear");
@@ -34,19 +33,26 @@ public class ApiServer {
                     return gson.toJson(Map.of("error", "The search parameter 'phrase' is required"));
                 }
 
-
                 Map<String, Object> response = queryEngine.executeQuery(phrase, author, startYear, endYear);
                 res.type("application/json");
+
                 return gson.toJson(response);
 
             } catch (Exception e) {
 
                 res.status(500);
                 return gson.toJson(Map.of("error", "Intern error of the server", "details", e.getMessage()));
+            } finally {
+                long stop = System.currentTimeMillis();
+
+                synchronized (latencies) {
+                    latencies.add((int) (stop - start));
+                }
             }
         });
 
         get("/test", (req, res) -> {
+            long start = System.currentTimeMillis();
             try {
                 String phrase = req.queryParams("phrase");
 
@@ -62,6 +68,12 @@ public class ApiServer {
             } catch (Exception e) {
                 res.status(500);
                 return gson.toJson(Map.of("error", "Intern error of the server", "details", e.getMessage()));
+            } finally {
+                long stop = System.currentTimeMillis();
+
+                synchronized (latencies) {
+                    latencies.add((int) (stop - start));
+                }
             }
         });
         get("/report", (req, res) -> {
@@ -86,7 +98,6 @@ public class ApiServer {
 
             Map<String, Object> reportData = new HashMap<>();
             reportData.put("timestamp", Instant.now().toString());
-            reportData.put("requests", snapshotLatencies.size());
             reportData.put("avgResponseTime", avgResponseTime + " ms");
             reportData.put("minLatency", minLatency + " ms");
             reportData.put("maxLatency", maxLatency + " ms");
@@ -95,7 +106,6 @@ public class ApiServer {
             res.type("application/json");
             return gson.toJson(reportData);
         });
-
 
         notFound((req, res) -> {
             res.type("application/json");
