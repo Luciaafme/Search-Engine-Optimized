@@ -33,11 +33,9 @@ public class Indexer {
 
 			Metadata metadata = metadataExtractor.getMetadata(bookContent, String.valueOf(bookID));
 			metadataStoreManager.update(metadata);
-			metadataStoreManager.printAllMetadata();
 			Map<String, List<Integer>> indexedWordMap = wordExtractor.getWords(bookContent, metadata.getBookID());
 			wordStoreManager.update(bookID, indexedWordMap);
 			System.out.println("Finished indexing book with id: " + bookID);
-			wordStoreManager.printMap();
 
 
 		} catch (Exception e) {

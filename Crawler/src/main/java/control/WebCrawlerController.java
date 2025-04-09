@@ -30,7 +30,6 @@ public class WebCrawlerController implements CrawlerController {
 	public void execute() throws IOException, InterruptedException {
 		Random random = new Random();
 		int booksDownloaded = 0;
-
 		while (booksDownloaded < numBooks) {
 			int bookId = random.nextInt(99999);
 			String urlString = "https://www.gutenberg.org/cache/epub/" + bookId + "/pg" + bookId + ".txt";
@@ -38,7 +37,7 @@ public class WebCrawlerController implements CrawlerController {
 			boolean success = downloader.downloadAndUploadToHazelcast(bookId, urlString, datalakePath, datalakeMap);
 			if (success) {
 				booksDownloaded++;
-				System.out.println("Books downloaded: " + booksDownloaded);
+				System.out.println("Books downloaded: " + booksDownloaded + "/" + numBooks);
 			}
 		}
 	}
@@ -56,12 +55,11 @@ public class WebCrawlerController implements CrawlerController {
 
 					datalakeMap.put(bookId, content);
 
-					System.out.println("Libro " + bookId + " subido a Hazelcast.");
+					System.out.println("Book " + bookId + " uploaded to Hazelcast.");
 				} catch (IOException | NumberFormatException e) {
 					System.err.println("Error al procesar el archivo: " + file + ", Error: " + e.getMessage());
 				}
 			});
 		}
-		System.out.println(datalakeMap.keySet().size());
 	}
 }

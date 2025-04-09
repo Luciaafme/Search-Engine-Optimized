@@ -1,25 +1,45 @@
 package control;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.config.XmlConfigBuilder;
+import com.hazelcast.config.NetworkConfig;
+import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 public class HazelcastServer {
-    private final HazelcastInstance hazelcastInstance;
+    private HazelcastInstance hazelcastInstance;
 
     public HazelcastServer() {
         try {
-            InputStream configStream = getClass().getClassLoader().getResourceAsStream("query_server_hazelcast.xml");
-            if (configStream == null) {
-                throw new FileNotFoundException("query_server_hazelcast.xml not found in classpath");
+
+            String hostIp = System.getenv("HOST_IP");
+            String remoteIp = System.getenv("REMOTE_IP");
+/*
+            String hostIp = "10.26.14.213";
+            String remoteIp = "10.26.14.214:5701";
+
+ */
+
+            if (hostIp == null || remoteIp == null) {
+                throw new RuntimeException("HOST_IP and REMOTE_IP environment variables must be set");
             }
 
-            Config config = new XmlConfigBuilder(configStream).build();
+
+            Config config = new Config();
+
+            NetworkConfig networkConfig = config.getNetworkConfig();
+            networkConfig.setPort(5701);
+            networkConfig.setPublicAddress(hostIp);
+
+            networkConfig.getJoin().getTcpIpConfig()
+                    .setEnabled(true)
+                    .addMember(remoteIp);
+
+
+            networkConfig.getJoin().getMulticastConfig().setEnabled(false);
+
             this.hazelcastInstance = Hazelcast.newHazelcastInstance(config);
+
             System.out.println("Hazelcast Server started successfully");
 
         } catch (Exception e) {
@@ -28,7 +48,7 @@ public class HazelcastServer {
     }
 
     public HazelcastInstance getHazelcastInstance() {
-        return hazelcastInstance;
+        return this.hazelcastInstance;
     }
 
     public void shutdown() {

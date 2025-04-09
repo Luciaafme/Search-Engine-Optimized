@@ -17,7 +17,7 @@ import java.util.List;
 public class IndexerMain {
 	public static void main(String[] args) {
 
-		HazelcastClientManager client = new HazelcastClientManager();
+		HazelcastManager client = new HazelcastManager();
 		HazelcastInstance clientInstance = client.getHazelcastInstance();
 
 		IMap<String, String> datalakeMap = clientInstance.getMap("datalakeMap");

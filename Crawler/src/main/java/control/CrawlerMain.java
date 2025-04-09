@@ -11,14 +11,13 @@ public class CrawlerMain {
 
 	public static void main(String[] args) {
 
-		HazelcastClientManager client = new HazelcastClientManager();
+		HazelcastManager client = new HazelcastManager();
 		HazelcastInstance clientInstance = client.getHazelcastInstance();
 		IMap<String, String> datalakeMap = clientInstance.getMap("datalakeMap");
 
-		System.out.println(args[0]);
-		String datalakeFolderPath = args[0];
+		String datalakeFolderPath = System.getenv("datalakePath");
 
-		int numBooks = 5;
+		int numBooks = Integer.parseInt(System.getenv("nBooks"));
 		Filter filter = new LanguageFilter();
 		Downloader downloader = new BookDownloader(filter);
 		WebCrawlerController controller = new WebCrawlerController(downloader, datalakeMap, datalakeFolderPath, numBooks);

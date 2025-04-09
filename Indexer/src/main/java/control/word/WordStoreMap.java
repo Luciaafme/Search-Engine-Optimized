@@ -17,7 +17,6 @@ public class WordStoreMap implements WordStoreManager {
 
 	@Override
 	public void update(String bookID, Map<String, List<Integer>> newWordsMap) {
-		System.out.println("Update");
 
 		for (Map.Entry<String, List<Integer>> entry : newWordsMap.entrySet()) {
 			String word = entry.getKey();
@@ -37,14 +36,4 @@ public class WordStoreMap implements WordStoreManager {
 		}
 	}
 
-	@Override
-	public void printMap() {
-		wordDatamartMap.forEach((word, occurrences) -> {
-			System.out.println("Word: " + word);
-			for (WordOccurrence occurrence : occurrences) {
-				System.out.println("  Book: " + occurrence.getBookID());
-				System.out.println("  Lines: " + occurrence.getLineNumbers());
-			}
-		});
-	}
 }

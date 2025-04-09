@@ -23,17 +23,4 @@ public class MetadataStoreMap implements MetadataStoreManager {
 			System.err.println("Metadata NULL, couldn't be stored.");
 		}
 	}
-
-	@Override
-	public void printAllMetadata() {
-		if (metadataMap.isEmpty()) {
-			System.out.println("Metadata map is empty");
-		} else {
-			System.out.println("Content of the Metadata map: ");
-			for (String key : metadataMap.keySet()) {
-				System.out.println(metadataMap.get(key));
-			}
-		}
-	}
-
 }

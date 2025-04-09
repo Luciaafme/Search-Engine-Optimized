@@ -15,8 +15,6 @@ public class CustomEntryListener<S, S1> implements EntryListener<String, String>
 	@Override
 	public void entryAdded(EntryEvent<String, String> event) {
 		System.out.println("listener activated");
-		System.out.println("Book: " + event.getKey());
-		System.out.println("Contend: " + event.getValue().substring(0, Math.min(event.getValue().length(), 100)) + "...");
 		indexer.execute(event.getKey(), event.getValue());
 	}
 

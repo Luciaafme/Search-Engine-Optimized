@@ -9,6 +9,4 @@ public interface WordStoreManager {
 
 	void update(String bookID, Map<String, List<Integer>> items) throws IOException;
 
-	void printMap();
-
 }
